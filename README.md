@@ -1,2 +1,2 @@
 # CART253
-Pippin Barr's coursework repository for CART253
+Mara Nowacki's coursework repository for CART253
