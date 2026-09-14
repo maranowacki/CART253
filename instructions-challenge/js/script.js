@@ -93,11 +93,6 @@ function draw() {
   ellipse(680, 520, 160, 50);
   ellipse(300, 570, 130, 40);
 
-  fill(245, 180, 210);
-  ellipse(430, 500, 100, 20);
-  ellipse(450, 540, 130, 20);
-  ellipse(470, 580, 150, 20);
-
   fill(230, 150, 80);
   ellipse(550, 500, 45, 25);
   triangle(530, 500, 510, 485, 510, 515);
@@ -138,33 +133,32 @@ function draw() {
 
   fill(90, 65, 60);
   rect(720, 345, 30, 45);
-
-  fill(90, 65, 60);
   rect(630, 365, 140, 10);
   rect(650, 350, 10, 45);
   rect(750, 350, 10, 45);
 
-  fill(255, 190, 205);
-  circle(210, 410, 20);
-
   fill(40, 35, 45);
-  ellipse(210, 460, 45, 90);
+  ellipse(210, 460, 55, 100);
 
   fill(255, 205, 180);
-  circle(210, 420, 30);
+  circle(210, 415, 34);
 
   stroke(40, 35, 45);
   strokeWeight(6);
-  line(195, 470, 185, 505);
-  line(225, 470, 235, 505);
+  line(195, 480, 185, 515);
+  line(225, 480, 235, 515);
 
-  stroke(255, 190, 210);
-  strokeWeight(5);
-  arc(210, 405, 40, 25, PI, TWO_PI);
+  fill(40, 35, 45);
+  noStroke();
+  ellipse(210, 400, 38, 18);
+
+  fill(255, 190, 210);
+  ellipse(210, 393, 28, 10);
 
   stroke(255, 220, 225);
   strokeWeight(3);
   noFill();
+
   arc(300, 120, 40, 20, PI, TWO_PI);
   arc(340, 120, 40, 20, PI, TWO_PI);
 
