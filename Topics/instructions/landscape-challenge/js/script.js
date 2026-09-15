@@ -10,10 +10,9 @@
 /**
  * I create the canvas once the program starts! It loads all the p5 data for my drawing!
 */
-let cursorImage;
 
 function preload() {
-  cursorImage = loadImage(./Topics/Cursor.png));
+
 }
 
 function setup() {
