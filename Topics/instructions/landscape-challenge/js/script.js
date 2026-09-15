@@ -13,7 +13,7 @@
 let cursorImage;
 
 function preload() {
-  cursorImage = loadImage('Cursor.png');
+  cursorImage = loadImage('cursor.png');
 }
 
 function setup() {
@@ -21,10 +21,17 @@ function setup() {
   noCursor();
 }
 
+let cursorImage;
 
-/**
- * I run the draw command over and over until the landscape is beautifully drawn!
-*/
+function preload() {
+  cursorImage = loadImage('cursor.png');
+}
+
+function setup() {
+  createCanvas(800, 600);
+  noCursor();
+}
+
 function draw() {
   background(55, 75, 125);
 
