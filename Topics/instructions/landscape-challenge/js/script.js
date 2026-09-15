@@ -1,7 +1,19 @@
+/**
+ * Lagoon
+ * Mara Nowacki
+ * 
+ * Cute simple Lagoon drawing using p5 :3
+ */
+
+"use strict";
+
+/**
+ * I create the canvas once the program starts! It loads all the p5 data for my drawing!
+*/
 let cursorImage;
 
 function preload() {
-  cursorImage = loadImage('cursor.png');
+  cursorImage = loadImage(./Topics/Cursor.png));
 }
 
 function setup() {
@@ -9,17 +21,10 @@ function setup() {
   noCursor();
 }
 
-let cursorImage;
 
-function preload() {
-  cursorImage = loadImage('cursor.png');
-}
-
-function setup() {
-  createCanvas(800, 600);
-  noCursor();
-}
-
+/**
+ * I run the draw command over and over until the landscape is beautifully drawn!
+*/
 function draw() {
   background(55, 75, 125);
 
