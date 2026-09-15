@@ -1,17 +1,7 @@
-/**
- * Lagoon
- * Mara Nowacki
- * 
- * Cute simple Lagoon drawing using p5 :3
- */
+let cursorImage;
 
-"use strict";
-
-/**
- * I create the canvas once the program starts! It loads all the p5 data for my drawing!
-
+function preload() {
   cursorImage = loadImage('cursor.png');
-
 }
 
 function setup() {
