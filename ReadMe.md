@@ -3,5 +3,10 @@ _My purpose_ : Collect and archive projects and prototyping work throughout the 
 
 ![image_url)](./Topics/mara_metal.png)
 
+# 🅙🅞🅤🅡🅝🅐🅛 *𝗟𝗶𝗻𝗸*
+[Click Me](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
-*https://github.com/maranowacki/CART253/blob/main/journal.md *
+
+
+
+THIS PAGE IS HEAVILY SUBJECT TO ACTIVE CHANGES
