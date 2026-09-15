@@ -13,7 +13,7 @@
 let cursorImage;
 
 function preload() {
-  cursorImage = loadImage('Cursor.png');
+  cursorImage = loadImage(./Topics/Cursor.png));
 }
 
 function setup() {
