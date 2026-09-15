@@ -1,28 +1,29 @@
 /**
- * Lagoon
+ * Mara's Lagoon
  * Mara Nowacki
  * 
- * Cute simple Lagoon drawing using p5 :3
+ * Cute little lagoon made with p5
  */
 
 "use strict";
 
 /**
- * I create the canvas once the program starts! It loads all the p5 data for my drawing!
+ * 
 */
+let cursorImage;
 
 function preload() {
-
+  cursorImage = loadImage('cursor.png');
 }
 
 function setup() {
-  createCanvas(1000, 800);
+  createCanvas(800, 600);
   noCursor();
 }
 
 
 /**
- * I run the draw command over and over until the landscape is beautifully drawn!
+ * 
 */
 function draw() {
   background(55, 75, 125);
@@ -74,6 +75,16 @@ function draw() {
   vertex(0, 430);
   endShape(CLOSE);
 
+  fill(235, 145, 190);
+  rect(340, 250, 70, 220);
+  rect(410, 270, 60, 200);
+  rect(470, 250, 80, 220);
+
+  fill(250, 185, 215);
+  rect(350, 250, 20, 220);
+  rect(430, 270, 18, 200);
+  rect(490, 250, 20, 220);
+
   fill(115, 160, 175);
   beginShape();
   vertex(0, 400);
@@ -91,6 +102,11 @@ function draw() {
   ellipse(130, 510, 150, 45);
   ellipse(680, 520, 160, 50);
   ellipse(300, 570, 130, 40);
+
+  fill(245, 180, 210);
+  ellipse(430, 500, 100, 20);
+  ellipse(450, 540, 130, 20);
+  ellipse(470, 580, 150, 20);
 
   fill(230, 150, 80);
   ellipse(550, 500, 45, 25);
@@ -132,32 +148,33 @@ function draw() {
 
   fill(90, 65, 60);
   rect(720, 345, 30, 45);
+
+  fill(90, 65, 60);
   rect(630, 365, 140, 10);
   rect(650, 350, 10, 45);
   rect(750, 350, 10, 45);
 
+  fill(255, 190, 205);
+  circle(210, 410, 20);
+
   fill(40, 35, 45);
-  ellipse(210, 460, 55, 100);
+  ellipse(210, 460, 45, 90);
 
   fill(255, 205, 180);
-  circle(210, 415, 34);
+  circle(210, 420, 30);
 
   stroke(40, 35, 45);
   strokeWeight(6);
-  line(195, 480, 185, 515);
-  line(225, 480, 235, 515);
+  line(195, 470, 185, 505);
+  line(225, 470, 235, 505);
 
-  fill(40, 35, 45);
-  noStroke();
-  ellipse(210, 400, 38, 18);
-
-  fill(255, 190, 210);
-  ellipse(210, 393, 28, 10);
+  stroke(255, 190, 210);
+  strokeWeight(5);
+  arc(210, 405, 40, 25, PI, TWO_PI);
 
   stroke(255, 220, 225);
   strokeWeight(3);
   noFill();
-
   arc(300, 120, 40, 20, PI, TWO_PI);
   arc(340, 120, 40, 20, PI, TWO_PI);
 
