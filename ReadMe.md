@@ -5,3 +5,8 @@ _My purpose_ : Collect and archive projects and prototyping work throughout the 
 
 # 🅙🅞🅤🅡🅝🅐🅛 *𝙇𝙞𝙣𝙠*
 [Click Me](https://github.com/maranowacki/CART253/blob/main/journal.md)
+
+
+
+
+THIS PAGE IS HEAVILY SUBJECT TO ACTIVE CHANGES
