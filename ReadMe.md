@@ -1,7 +1,7 @@
 # 🅒🅐🅡🅣 *253*
 _My purpose_ : Collect and archive projects and prototyping work throughout the Fall '26 semester of CART253
 
-![image_url)](./Topics/Mara New Watermark.png)
+NEW IMAGE COMING SOON ..
 
 
 # 🅙🅞🅤🅡🅝🅐🅛 *𝗟𝗶𝗻𝗸*
