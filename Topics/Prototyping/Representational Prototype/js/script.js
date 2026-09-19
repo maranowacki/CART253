@@ -32,10 +32,10 @@ function draw() {
   vertex(398, 424);
   vertex(406, 380);
   vertex(410, 362);
-  vertex(416, 338); // left ear tip
+  vertex(416, 338); 
   vertex(430, 356);
   vertex(446, 358);
-  vertex(458, 344); // right ear tip
+  vertex(458, 344); 
   vertex(462, 358);
   vertex(460, 384);
   vertex(450, 406);
@@ -75,7 +75,6 @@ function sampleCurve(pts, step = 1.5) {
   return out;
 }
 
-// Tail 2
 function taperedStroke(pts, widths) {
   const s = sampleCurve(pts);
   const segs = pts.length - 1;
@@ -87,6 +86,8 @@ function taperedStroke(pts, widths) {
     circle(s[i][0], s[i][1], w);
   }
 }
+
+
 function leg(pts) {
   const s = sampleCurve(pts);
   beginShape();
