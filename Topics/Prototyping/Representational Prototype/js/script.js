@@ -1,3 +1,13 @@
+/**
+ * Representational Prototype
+ * Mara Nowacki
+ * 
+ * Silly cat drawing
+ */
+
+
+
+
 function setup() {
   createCanvas(740, 740);
   noLoop();

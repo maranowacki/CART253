@@ -1,3 +1,13 @@
+/**
+ * Abstract Prototype
+ * Mara Nowacki
+ * 
+ * Abstract flower drawing
+ */
+
+
+
+
 // Anchor points so all the lines match up somewhat evenly
 const BASE = { x: 386, y: 552 };                      // Main stem and leaves meet here
 const MAIN = [252, 236, 330, 285, 376, 420, BASE.x, BASE.y]; // Main stem bezier curve
