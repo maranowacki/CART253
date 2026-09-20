@@ -2,7 +2,7 @@
 
 Mara Nowacki
 
-[View this project online](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
+[View this project online](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
 
 ## Description
 
