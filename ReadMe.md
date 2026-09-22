@@ -6,15 +6,19 @@
 
 
 
-<div align="center">
-[Journal](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
+
+
+<div align="center">
 ¹ : [Representational](https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/)
 ² : [Abstract](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
-³[Weird](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
+³ : [Weird](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
 
 [Code Link](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
 
+
+
+[Journal](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
 </div>
 
