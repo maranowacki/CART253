@@ -1,13 +1,16 @@
-# 🅒🅐🅡🅣 *253*
-_My purpose_ : Collect and archive projects and prototyping work throughout the Fall '26 semester of CART253
+<img src="CART253.png" width="500">
+
+
+Mara's Archive
+
 
 <img src="GothicMara.png" width="400">
 
 
-# 🅙🅞🅤🅡🅝🅐🅛 *𝗟𝗶𝗻𝗸*
+<img src="GothicLinks.png" width="200">
+
 [Click Me](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
-# 🅟🅡🅞🅣🅞🅣🅨🅟🅔🅢 *𝗟𝗶𝗻𝗸*
 [Representational](https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/)
 [Abstract](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
 [Weird](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
@@ -18,5 +21,3 @@ _My purpose_ : Collect and archive projects and prototyping work throughout the 
 
 
 
-
-THIS PAGE IS HEAVILY SUBJECT TO ACTIVE CHANGES
