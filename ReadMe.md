@@ -17,12 +17,3 @@
 
 
 [<img src="JournalGothic.png" width="200">](https://github.com/maranowacki/CART253/blob/main/journal.md)
-
-
-
-
-</div>
-
-<p align="center">
-  <img src="GothicDNS.png" width="100">
-</p>
