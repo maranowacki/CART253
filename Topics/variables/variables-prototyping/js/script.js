@@ -1,12 +1,12 @@
 /**
  * Beetle w/ Moving Limbs
- * Mara Nowacki
+ * Mara Nowacki :)
  * 
  */
 
 
 
-const BG = 221;   // BACKGROUND
+const BG = (255, 255, 255) ;   // BACKGROUND
 const INK = 0;    // BLACK BEETLE SILLOUHETTE
 const GAP = 4;    // WIDTH OF GAPS BETWEEN LIMBS
 
