@@ -1,11 +1,11 @@
 <img src="CART253.png" width="500">
 
-
-Mara's Archive
+<img src="GothicDivider.png" width="200">
 
 
 <img src="GothicMara.png" width="400">
 
+<img src="GothicDivider.png" width="200">
 
 <img src="GothicLinks.png" width="200">
 

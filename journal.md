@@ -1,5 +1,6 @@
 <img src="GothicJournal.png" width="400">
 
+<img src="GothicDivider.png" width="200">
 
 <img src="GothicSept.png" width="200">
 
