@@ -15,5 +15,5 @@
 <br>
 
 
-[<img src="JournalGothic.png" width="200">](https://github.com/maranowacki/CART253/blob/main/journal.md)
+[<img src="JournalGothic.png" width="200">](https://github.com/maranowacki/CART253/blob/main/JournalWIP.md)
 
