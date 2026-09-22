@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="CART253.png" width="400"><br><br>
+  <img src="CART253.png" width="600"><br><br>
   <img src="GothicDivider.png" width="400"><br><br>
   <img src="GothicLinks.png" width="400">
 </div>
@@ -17,4 +17,7 @@
 
 
 
-<img src="GothicDNS.png" width="50">
+<div align="center">
+  <img src="GothicDNS.pngpng" width="100"><br><br>
+ 
+</div>
