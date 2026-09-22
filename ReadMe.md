@@ -12,11 +12,11 @@
 
 <div align="center">
   <a href="https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping">
-    <img src="paintbrush.png" width="200">
+    <img src="paintbrush.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
-    <img src="journa,.png" width="200">
+    <img src="journal.png" width="50">
   </a>
 </div>
 
