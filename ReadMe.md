@@ -1,13 +1,10 @@
-<img src="Left.pngpng" align="left" height="500">
-<img src="Right.png" align="right" height="500">
-
 <div align="center">
   <img src="CART253.png" width="600"><br><br>
   <img src="GothicDivider.png" width="400"><br><br>
   <img src="GothicLinks.png" width="400">
 </div>
 
-<br clear="both">
+
 
 
 
@@ -20,3 +17,4 @@
 
 
 [<img src="JournalGothic.png" width="200">](https://github.com/maranowacki/CART253/blob/main/journal.md)
+
