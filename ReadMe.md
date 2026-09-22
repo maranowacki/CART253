@@ -2,7 +2,7 @@
 
 <img src="GothicDivider.png" width="400">
 
-<img src="GothicLinks.png" width="200">
+<img src="GothicLinks.png" width="400">
 
 [Click Me](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
@@ -16,3 +16,4 @@
 
 
 
+<img src="GothicDNS.png" width="50">
