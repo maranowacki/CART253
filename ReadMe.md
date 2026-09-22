@@ -1,12 +1,7 @@
 # 🅒🅐🅡🅣 *253*
 _My purpose_ : Collect and archive projects and prototyping work throughout the Fall '26 semester of CART253
 
-const img = document.createElement('img');
-img.src = 'GothicMara.png';
-
-// Method A: Set the width attribute (in pixels)
-img.width = 300; 
-
+<img src="GothicMara.png" width="400">
 
 
 # 🅙🅞🅤🅡🅝🅐🅛 *𝗟𝗶𝗻𝗸*
