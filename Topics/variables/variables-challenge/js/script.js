@@ -15,9 +15,9 @@ let mrFurious = {
   size: 100,
   // Colour
   fill: {
-    r: 255,
-    g: 225,
-    b: 225
+    mrFurious.fill.r = constrain(mrFurious.fill.r + 1, 0, 255);
+    mrFurious.fill.g = constrain(mrFurious.fill.g - 2, 0, 255);
+    mrFurious.fill.b = constrain(mrFurious.fill.b - 2, 0, 255);
   }
 };
 
@@ -40,4 +40,3 @@ function draw() {
   fill(mrFurious.fill.r, mrFurious.fill.g, mrFurious.fill.b);
   ellipse(mrFurious.x, mrFurious.y, mrFurious.size);
   pop();
-}
