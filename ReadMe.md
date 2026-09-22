@@ -1,4 +1,4 @@
-<div align=<div align="center">
+<div align="center">
   <img src="CART253.png" width="600">
   <br><br>
   <img src="GothicDivider.png" width="400">
@@ -8,11 +8,15 @@
 
 <br>
 
-<p align="center">
-  <a href="https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping"><img src="PrototypeGoth.png" width="200"></a>
+<div align="center">
+  <a href="https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping">
+    <img src="PrototypeGoth.png" width="200">
+  </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md"><img src="JournalGothic.png" width="200"></a>
-</p>
+  <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
+    <img src="JournalGothic.png" width="200">
+  </a>
+</div>
 
 <br>
 
