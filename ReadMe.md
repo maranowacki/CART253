@@ -1,7 +1,5 @@
-<table>
-<tr>
-<td width="15%"><img src="Left.png" width="100%"></td>
-<td width="70%">
+<img src="Left.pngpng" align="left" height="500">
+<img src="Right.png" align="right" height="500">
 
 <div align="center">
   <img src="CART253.png" width="600"><br><br>
@@ -9,11 +7,7 @@
   <img src="GothicLinks.png" width="400">
 </div>
 
-</td>
-<td width="15%"><img src="Right.png" width="100%"></td>
-</tr>
-</table>
-
+<br clear="both">
 
 
 
