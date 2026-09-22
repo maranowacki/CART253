@@ -14,17 +14,19 @@
 ² : [Abstract](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
 ³ : [Weird](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
 
-[Code Link](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
-
-
-
-[Journal](https://github.com/maranowacki/CART253/blob/main/journal.md)
-
 </div>
 
 
 
+<div align="center">
+[Code Link](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
 
+</div>
+
+<div align="center">
+[Journal](https://github.com/maranowacki/CART253/blob/main/journal.md)
+
+</div>
 
 
 <p align="center">
