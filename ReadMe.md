@@ -19,5 +19,4 @@
 
 <div align="center">
   <img src="GothicDNS.pngpng" width="100">
- 
-</div>
+ </div>
