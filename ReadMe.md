@@ -1,6 +1,6 @@
 <div align="center">
   <img src="CART253.png" width="600"><br><br>
-  <img src="GothicDivider.png" width="400"><br><br>
+  <img src="GothicDivider.png" width="600"><br><br>
   <img src="GothicLinks.png" width="400">
 </div>
 
