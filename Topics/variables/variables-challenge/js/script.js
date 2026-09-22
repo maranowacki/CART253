@@ -13,23 +13,22 @@ let mrFurious = {
   x: 200,
   y: 200,
   size: 100,
-  // Colour
-  fill: {
-    r: 255,
-    g: 225,
-    b: 225
-  }
+  // How angry he is: 0 = calm, 1 = absolutely livid
+  rage: 0,
+  // How much rage builds each frame
+  rageRate: 0.004,
+  // How far (in pixels) he shakes at maximum rage
+  maxShake: 8,
+  // Colours at the two extremes of his rage
+  calmFill: { r: 255, g: 225, b: 225 },
+  furiousFill: { r: 255, g: 0, b: 0 }
 };
 
-// The sky, which darkens over time
+// The sky, which darkens as Mr. Furious gets angrier
 let sky = {
-  r: 160,
-  g: 180,
-  b: 200
+  calm: { r: 160, g: 180, b: 200 },
+  furious: { r: 0, g: 0, b: 0 }
 };
-
-// How fast things change each frame — shared by sky and Mr. Furious
-let changeRate = 1;
 
 // A bird that flies left to right
 let bird = {
@@ -50,22 +49,30 @@ function setup() {
  * Draw (and update) Mr. Furious
  */
 function draw() {
-  // Gradually darken the sky toward black
-  sky.r = constrain(sky.r - changeRate, 0, 255);
-  sky.g = constrain(sky.g - changeRate, 0, 255);
-  sky.b = constrain(sky.b - changeRate, 0, 255);
+  // Build up his rage, capped at 1
+  mrFurious.rage = constrain(mrFurious.rage + mrFurious.rageRate, 0, 1);
 
-  background(sky.r, sky.g, sky.b);
+  // Sky: blend from calm to dark based on his rage
+  let skyR = lerp(sky.calm.r, sky.furious.r, mrFurious.rage);
+  let skyG = lerp(sky.calm.g, sky.furious.g, mrFurious.rage);
+  let skyB = lerp(sky.calm.b, sky.furious.b, mrFurious.rage);
+  background(skyR, skyG, skyB);
 
-  // Gradually redden Mr. Furious over time
-  mrFurious.fill.g = constrain(mrFurious.fill.g - changeRate, 0, 255);
-  mrFurious.fill.b = constrain(mrFurious.fill.b - changeRate, 0, 255);
+  // Colour: blend from calm to furious based on rage
+  let r = lerp(mrFurious.calmFill.r, mrFurious.furiousFill.r, mrFurious.rage);
+  let g = lerp(mrFurious.calmFill.g, mrFurious.furiousFill.g, mrFurious.rage);
+  let b = lerp(mrFurious.calmFill.b, mrFurious.furiousFill.b, mrFurious.rage);
+
+  // Shaking: the angrier he is, the more he trembles
+  let shake = map(mrFurious.rage, 0, 1, 0, mrFurious.maxShake);
+  let shakeX = mrFurious.x + random(-shake, shake);
+  let shakeY = mrFurious.y + random(-shake, shake);
 
   // Draw Mr. Furious as a coloured circle
   push();
   noStroke();
-  fill(mrFurious.fill.r, mrFurious.fill.g, mrFurious.fill.b);
-  ellipse(mrFurious.x, mrFurious.y, mrFurious.size);
+  fill(r, g, b);
+  ellipse(shakeX, shakeY, mrFurious.size);
   pop();
 
   // Move the bird to the right, and loop it back once it's off-screen
@@ -80,8 +87,8 @@ function draw() {
   fill(40, 40, 40);
   triangle(
     bird.x, bird.y,
-    bird.x - bird.size, bird.y + bird.size / 50,
-    bird.x - bird.size, bird.y - bird.size / 50
+    bird.x - bird.size, bird.y + bird.size / 2,
+    bird.x - bird.size, bird.y - bird.size / 2
   );
   pop();
 }
