@@ -1,6 +1,6 @@
-<img src="CART253.png" width="500">
+<img src="CART253.png" width="400">
 
-<img src="GothicDivider.png" width="300">
+<img src="GothicDivider.png" width="400">
 
 <img src="GothicLinks.png" width="200">
 
