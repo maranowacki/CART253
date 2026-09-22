@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="images/CART253.png" width="600">
+  <img src="CART253.png" width="600">
 </div>
 
 <br><br><br><br>
 
 <div align="center">
-  <img src="images/GothicLinks.png" width="400">
+  <img src="GothicLinks.png" width="400">
 </div>
 
 <br>
