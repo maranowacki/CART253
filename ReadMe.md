@@ -18,6 +18,6 @@
 
 
 <div align="center">
-  <img src="GothicDNS.pngpng" width="100"><br><br>
+  <img src="GothicDNS.pngpng" width="100">
  
 </div>
