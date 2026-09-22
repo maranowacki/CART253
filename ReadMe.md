@@ -11,14 +11,12 @@
 
 <div align="center">
 
-[![Representational](https://img.shields.io/badge/¹_Representational-000000?style=for-the-badge&labelColor=000000)](https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/)
-[![Abstract](https://img.shields.io/badge/²_Abstract-000000?style=for-the-badge&labelColor=000000)](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
-[![Weird](https://img.shields.io/badge/³_Weird-000000?style=for-the-badge&labelColor=000000)](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
+[<img src="PrototypeGoth.png" width="320">](https://maranowacki.github.io/CART253/Topics/Prototyping/)
 
 <br>
 
-[![Code Link](https://img.shields.io/badge/Code_Link-000000?style=for-the-badge&labelColor=000000)](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
-[![Journal](https://img.shields.io/badge/Journal-000000?style=for-the-badge&labelColor=000000)](https://github.com/maranowacki/CART253/blob/main/journal.md)
+
+[<img src="JournalGothic.png" width="320">](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
 </div>
 
