@@ -11,7 +11,7 @@
 
 <div align="center">
 
-[<img src="PrototypeGoth.png" width="200">](https://maranowacki.github.io/CART253/Topics/Prototyping/)
+[<img src="PrototypeGoth.png" width="200">](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
 
 <br>
 
