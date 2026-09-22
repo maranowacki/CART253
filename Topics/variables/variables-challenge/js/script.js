@@ -1,6 +1,6 @@
 /**
  * Mr. Furious
- * Mara Nowacki
+ * Mara, Alice, Nico
  *
  * A guy who becomes visibly furious! Notes for assisting classmates as well :)
  */
