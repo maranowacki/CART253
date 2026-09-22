@@ -10,24 +10,24 @@
 
 
 <div align="center">
-¹ : [Representational](https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/)
-² : [Abstract](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/)
+
+¹ : [Representational](https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/) <br>
+² : [Abstract](https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/) <br>
 ³ : [Weird](https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/)
 
 </div>
 
-
-
 <div align="center">
+
 [Code Link](https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping)
 
 </div>
 
 <div align="center">
+
 [Journal](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
 </div>
-
 
 <p align="center">
   <img src="GothicDNS.png" width="100">
