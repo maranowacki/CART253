@@ -11,12 +11,15 @@
 
 <div align="center">
 
-[<img src="PrototypeGoth.png" width="320">](https://maranowacki.github.io/CART253/Topics/Prototyping/)
+[<img src="PrototypeGoth.png" width="200">](https://maranowacki.github.io/CART253/Topics/Prototyping/)
 
 <br>
 
 
-[<img src="JournalGothic.png" width="320">](https://github.com/maranowacki/CART253/blob/main/journal.md)
+[<img src="JournalGothic.png" width="200">](https://github.com/maranowacki/CART253/blob/main/journal.md)
+
+
+
 
 </div>
 
