@@ -1,10 +1,9 @@
 <div align="center">
-<img src="CART253.png" width="400">
-
-<img src="GothicDivider.png" width="400">
-
-<img src="GothicLinks.png" width="400">
+  <img src="CART253.png" width="400"><br><br>
+  <img src="GothicDivider.png" width="400"><br><br>
+  <img src="GothicLinks.png" width="400">
 </div>
+
 
 [Click Me](https://github.com/maranowacki/CART253/blob/main/journal.md)
 
