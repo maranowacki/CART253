@@ -13,24 +13,24 @@ let mrFurious = {
   x: 200,
   y: 200,
   size: 100,
-  // How angry he is: 0 = calm, 1 = absolutely livid
+  // Anger Scale
   rage: 0,
-  // How much rage builds each frame
+  // Rage
   rageRate: 0.004,
-  // How far (in pixels) he shakes at maximum rage
+  // Pixels Shaken
   maxShake: 8,
-  // Colours at the two extremes of his rage
+  // Colors at both extremes
   calmFill: { r: 255, g: 225, b: 225 },
   furiousFill: { r: 255, g: 0, b: 0 }
 };
 
-// The sky, which darkens as Mr. Furious gets angrier
+// The sky
 let sky = {
   calm: { r: 160, g: 180, b: 200 },
   furious: { r: 0, g: 0, b: 0 }
 };
 
-// A bird that flies left to right
+// A bird 
 let bird = {
   x: -20,
   y: 80,
@@ -52,7 +52,7 @@ function draw() {
   // Build up his rage, capped at 1
   mrFurious.rage = constrain(mrFurious.rage + mrFurious.rageRate, 0, 1);
 
-  // Sky: blend from calm to dark based on his rage
+  // Sky: Based on Rage
   let skyR = lerp(sky.calm.r, sky.furious.r, mrFurious.rage);
   let skyG = lerp(sky.calm.g, sky.furious.g, mrFurious.rage);
   let skyB = lerp(sky.calm.b, sky.furious.b, mrFurious.rage);
@@ -63,7 +63,7 @@ function draw() {
   let g = lerp(mrFurious.calmFill.g, mrFurious.furiousFill.g, mrFurious.rage);
   let b = lerp(mrFurious.calmFill.b, mrFurious.furiousFill.b, mrFurious.rage);
 
-  // Shaking: the angrier he is, the more he trembles
+  // Shaking
   let shake = map(mrFurious.rage, 0, 1, 0, mrFurious.maxShake);
   let shakeX = mrFurious.x + random(-shake, shake);
   let shakeY = mrFurious.y + random(-shake, shake);
@@ -75,7 +75,7 @@ function draw() {
   ellipse(shakeX, shakeY, mrFurious.size);
   pop();
 
-  // Move the bird to the right, and loop it back once it's off-screen
+  // Looping Bird
   bird.x = bird.x + bird.speed;
   if (bird.x > width + bird.size) {
     bird.x = -bird.size;
