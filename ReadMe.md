@@ -18,6 +18,14 @@
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
     <img src="journal.png" width="50">
   </a>
+<br><br>
+
+<div align="center">
+  <img src="Rep.png" width="180">
+  &nbsp;&nbsp;
+  <img src="Abstract.png" width="180">
+  &nbsp;&nbsp;
+  <img src="weird.png" width="180">
 </div>
 
 <br>
