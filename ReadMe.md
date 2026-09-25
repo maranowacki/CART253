@@ -18,14 +18,22 @@
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
     <img src="journal.png" width="50">
   </a>
+</div>
+
 <br><br>
 
 <div align="center">
-  <img src="Rep.png" width="180">
+  <a href="https://maranowacki.github.io/CART253/Topics/Prototyping/representationalprototype/">
+    <img src="Rep.png" width="180">
+  </a>
   &nbsp;&nbsp;
-  <img src="Abstract.png" width="180">
+  <a href="https://maranowacki.github.io/CART253/Topics/Prototyping/abstractprototype/">
+    <img src="Abstract.png" width="180">
+  </a>
   &nbsp;&nbsp;
-  <img src="weird.png" width="180">
+  <a href="https://maranowacki.github.io/CART253/Topics/Prototyping/weirdprototype/">
+    <img src="weird.png" width="180">
+  </a>
 </div>
 
 <br>
