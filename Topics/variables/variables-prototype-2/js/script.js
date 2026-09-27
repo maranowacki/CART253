@@ -5,179 +5,179 @@
  */
 
 
-const INK = 0, PAPER = 255;
+// Colors
+let ink = 0;
+let paper = 255;
 
+// Eye positions and sizes
+let leftEyeX = 206;
+let rightEyeX = 392;
+let eyeY = 372;
+let leftEyeW = 94;
+let leftEyeH = 42;
+let rightEyeW = 82;
+let rightEyeH = 38;
+
+// Blink settings
+let blinkEvery = 50;   
+let blinkLength = 8;  
+let eyeOpen = 1;     
 function setup() {
-  const s = Math.min(windowWidth, windowHeight, 600);
-  createCanvas(s, s);
-  noLoop();
-}
-
-function windowResized() {
-  const s = Math.min(windowWidth, windowHeight, 600);
-  resizeCanvas(s, s);
-  redraw();
+  createCanvas(600, 600);
+  strokeJoin(ROUND);
+  strokeCap(ROUND);
 }
 
 function draw() {
-  background(PAPER);
-  scale(width / 600);
-  strokeJoin(ROUND);
-  strokeCap(ROUND);
+  background(paper);
 
-  drawHair();
-  drawEar(92, 368, false);
-  drawEar(488, 370, true);
-  drawFace();
-  drawBrows();
-  drawLeftEye();
-  drawRightEye();
-  drawMouth();
-}
-
-
-function bez(a, b, c, d, t) {
-  const u = 1 - t;
-  return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d;
-}
-
-function bezierPts(p0, c1, c2, p3, steps = 24) {
-  const pts = [];
-  for (let i = 1; i <= steps; i++) {
-    const t = i / steps;
-    pts.push([bez(p0[0], c1[0], c2[0], p3[0], t), bez(p0[1], c1[1], c2[1], p3[1], t)]);
+  // ----- Blink -----
+  if (frameCount % blinkEvery < blinkLength) {
+    eyeOpen = 0.08;
+  } else {
+    eyeOpen = 1;
   }
-  return pts;
-}
 
-function splinePts(pts, steps = 12) {
-  const out = [];
-  for (let i = 1; i < pts.length - 2; i++) {
-    const [p0, p1, p2, p3] = [pts[i - 1], pts[i], pts[i + 1], pts[i + 2]];
-    for (let s = 0; s <= steps; s++) {
-      const t = s / steps, t2 = t * t, t3 = t2 * t;
-      const f = (a, b, c, d) =>
-        0.5 * (2 * b + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
-      out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
-    }
-  }
-  return out;
-}
-
-function shapeFrom(pts, closed = true) {
+  // ----- Hair -----
+  fill(ink);
+  noStroke();
   beginShape();
-  for (const [x, y] of pts) vertex(x, y);
-  if (closed) endShape(CLOSE); else endShape();
-}
+  vertex(72, 502);
+  vertex(88, 440);
+  vertex(90, 360);
+  vertex(98, 260);
+  vertex(112, 170);
+  vertex(125, 105);
+  vertex(150, 72);
+  vertex(185, 58);
+  vertex(210, 60);
+  vertex(240, 78);
+  vertex(270, 108);
+  vertex(300, 112);
+  vertex(335, 104);
+  vertex(380, 90);
+  vertex(440, 82);
+  vertex(485, 95);
+  vertex(500, 125);
+  vertex(502, 190);
+  vertex(498, 260);
+  vertex(505, 340);
+  vertex(508, 420);
+  vertex(512, 470);
+  vertex(508, 492);
+  vertex(488, 480);
+  vertex(478, 470);
+  vertex(470, 482);
+  vertex(452, 470);
+  vertex(440, 420);
+  vertex(160, 420);
+  vertex(145, 470);
+  vertex(128, 488);
+  vertex(112, 478);
+  vertex(100, 500);
+  endShape(CLOSE);
 
 
-function drawHair() {
-  fill(INK); noStroke();
-  shapeFrom([
-    [72, 502], [88, 440], [90, 360], [98, 260], [112, 170], [125, 105], [150, 72],
-    [185, 58], [210, 60], [240, 78],               // left ear
-    [270, 108], [300, 112], [335, 104],            // dip between ears
-    [380, 90], [440, 82], [485, 95], [500, 125],   // right ear
-    [502, 190], [498, 260], [505, 340], [508, 420], [512, 470], [508, 492],
-    [488, 480], [478, 470], [470, 482], [452, 470], [440, 420],
-    [160, 420], [145, 470], [128, 488], [112, 478], [100, 500]
-  ]);
+  fill(paper);
+  triangle(166, 146, 182, 122, 208, 130);
+  triangle(430, 148, 454, 136, 468, 174);
 
-  fill(PAPER);
-  shapeFrom([[166, 146], [180, 124], [208, 130], [190, 138]]);
-  shapeFrom([[430, 148], [452, 136], [466, 150], [468, 174], [455, 165]]);
-}
+  stroke(ink);
+  strokeWeight(6);
+  fill(paper);
+  arc(92, 368, 62, 66, 0.95, 5.35, OPEN);
+  arc(488, 370, 62, 66, -2.2, 2.2, OPEN);
 
-
-
-function drawEar(x, y, flip) {
-  push();
-  translate(x, y);
-  if (flip) scale(-1, 1);
-  stroke(INK); strokeWeight(6); fill(PAPER);
-  arc(0, 0, 62, 66, HALF_PI * 0.6, TWO_PI - HALF_PI * 0.6, OPEN);
   strokeWeight(5);
-  line(-6, -8, 8, 6);
-  line(-6, 6, 8, -8);
-  pop();
-}
+  line(86, 360, 100, 374);
+  line(86, 374, 100, 360);
+  line(482, 362, 496, 376);
+  line(482, 376, 496, 362);
 
+  strokeWeight(6);
+  fill(paper);
+  beginShape();
+  vertex(135, 272);
+  vertex(165, 268);
+  vertex(174, 240);
+  vertex(184, 262);
+  vertex(255, 262);
+  vertex(270, 226);
+  vertex(282, 258);
+  vertex(334, 260);
+  vertex(343, 240);
+  vertex(352, 268);
+  vertex(445, 272);
+  vertex(449, 320);
+  vertex(449, 370);
+  vertex(443, 410);
+  vertex(428, 438);
+  vertex(405, 452);
+  vertex(370, 466);
+  vertex(330, 472);
+  vertex(290, 472);
+  vertex(250, 468);
+  vertex(215, 462);
+  vertex(190, 450);
+  vertex(165, 432);
+  vertex(145, 405);
+  vertex(136, 370);
+  vertex(134, 320);
+  endShape(CLOSE);
 
-function drawFace() {
-  const pts = [
-    [135, 272],
-    [165, 268], [174, 240], [184, 262],
-    [255, 262], [270, 226], [282, 258],
-    [334, 260], [343, 240], [352, 268],
-    [445, 272],
-    ...bezierPts([445, 272], [452, 340], [450, 420], [405, 452]),
-    ...bezierPts([405, 452], [360, 478], [250, 478], [200, 458]),
-    ...bezierPts([200, 458], [140, 432], [130, 360], [135, 272])
-  ];
-  fill(PAPER); stroke(INK); strokeWeight(6);
-  shapeFrom(pts);
-}
-
-function drawBrows() {
-  fill(INK); noStroke();
+  noStroke();
+  fill(ink);
   circle(245, 308, 20);
   circle(345, 308, 20);
-}
+
+  
+  noStroke();
+  fill(paper);
+  ellipse(leftEyeX, eyeY, leftEyeW, leftEyeH * eyeOpen);
+  fill(ink);
+  ellipse(leftEyeX + 22, eyeY, 36, leftEyeH * 0.8 * eyeOpen);
+  noFill();
+  stroke(ink);
+  strokeWeight(6);
+  ellipse(leftEyeX, eyeY, leftEyeW, leftEyeH * eyeOpen);
+
+  noStroke();
+  fill(paper);
+  ellipse(rightEyeX, eyeY, rightEyeW, rightEyeH * eyeOpen);
+  fill(ink);
+  ellipse(rightEyeX + 16, eyeY, 34, rightEyeH * 0.8 * eyeOpen);
+  noFill();
+  stroke(ink);
+  strokeWeight(6);
+  ellipse(rightEyeX, eyeY, rightEyeW, rightEyeH * eyeOpen);
+
+  strokeWeight(5);
+  line(180, 389, 180, 405);
+  line(200, 393, 200, 411);
+  line(220, 391, 220, 403);
+  line(370, 388, 370, 400);
+  line(388, 391, 388, 407);
+  line(404, 390, 404, 400);
+
+  noStroke();
+  fill(ink);
+  circle(180, 405, 8);
+  circle(200, 411, 8);
+  circle(220, 403, 8);
+  circle(370, 400, 8);
+  circle(388, 407, 8);
+  circle(404, 400, 8);
 
 
-function almondPts(cx, cy, w, h) {
-  const L = [cx - w / 2, cy], R = [cx + w / 2, cy];
-  return [
-    L,
-    ...bezierPts(L, [cx - w * 0.22, cy - h * 0.72], [cx + w * 0.22, cy - h * 0.72], R),
-    ...bezierPts(R, [cx + w * 0.22, cy + h * 0.46], [cx - w * 0.22, cy + h * 0.46], L)
-  ];
-}
-
-function drawEye(cx, cy, w, h, pupilX, pupilD, tears) {
-  const pts = almondPts(cx, cy, w, h);
-
-  noStroke(); fill(PAPER);
-  shapeFrom(pts);
-
-  const ctx = drawingContext;
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(pts[0][0], pts[0][1]);
-  for (const [x, y] of pts) ctx.lineTo(x, y);
-  ctx.closePath();
-  ctx.clip();
-  fill(INK);
-  circle(pupilX, cy - h * 0.05, pupilD);
-  ctx.restore();
-
-  noFill(); stroke(INK); strokeWeight(6);
-  shapeFrom(pts);
-
-  for (const [t, len] of tears) {
-    const x = bez(cx + w / 2, cx + w * 0.22, cx - w * 0.22, cx - w / 2, t);
-    const y = bez(cy, cy + h * 0.46, cy + h * 0.46, cy, t);
-    stroke(INK); strokeWeight(5);
-    line(x, y, x, y + len);
-    noStroke(); fill(INK);
-    circle(x, y + len, 8);
-  }
-}
-
-function drawLeftEye() {
-  drawEye(206, 372, 94, 48, 234, 50, [[0.55, 14], [0.7, 18], [0.84, 12]]);
-}
-
-function drawRightEye() {
-  drawEye(392, 372, 82, 42, 410, 50, [[0.5, 12], [0.66, 16], [0.8, 10]]);
-}
-
-
-
-function drawMouth() {
-  noFill(); stroke(INK); strokeWeight(6);
-  shapeFrom(splinePts([
-    [262, 432], [266, 440], [282, 438], [290, 432],
-    [298, 438], [316, 440], [330, 436], [334, 432]
-  ]), false);
+  noFill();
+  stroke(ink);
+  strokeWeight(6);
+  beginShape();
+  vertex(266, 440);
+  vertex(280, 440);
+  vertex(290, 432);
+  vertex(300, 440);
+  vertex(316, 440);
+  vertex(330, 436);
+  endShape();
 }
