@@ -41,7 +41,6 @@ function bez(a, b, c, d, t) {
   return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d;
 }
 
-
 function bezierPts(p0, c1, c2, p3, steps = 24) {
   const pts = [];
   for (let i = 1; i <= steps; i++) {
@@ -68,9 +67,8 @@ function splinePts(pts, steps = 12) {
 function shapeFrom(pts, closed = true) {
   beginShape();
   for (const [x, y] of pts) vertex(x, y);
-  closed ? endShape(CLOSE) : endShape();
+  if (closed) endShape(CLOSE); else endShape();
 }
-
 
 
 function drawHair() {
@@ -91,29 +89,27 @@ function drawHair() {
 }
 
 
+
 function drawEar(x, y, flip) {
   push();
   translate(x, y);
   if (flip) scale(-1, 1);
   stroke(INK); strokeWeight(6); fill(PAPER);
   arc(0, 0, 62, 66, HALF_PI * 0.6, TWO_PI - HALF_PI * 0.6, OPEN);
-  strokeWeight(5);   // little X earring mark
+  strokeWeight(5);
   line(-6, -8, 8, 6);
   line(-6, 6, 8, -8);
   pop();
 }
 
 
-
 function drawFace() {
   const pts = [
-  
     [135, 272],
     [165, 268], [174, 240], [184, 262],
     [255, 262], [270, 226], [282, 258],
     [334, 260], [343, 240], [352, 268],
     [445, 272],
-
     ...bezierPts([445, 272], [452, 340], [450, 420], [405, 452]),
     ...bezierPts([405, 452], [360, 478], [250, 478], [200, 458]),
     ...bezierPts([200, 458], [140, 432], [130, 360], [135, 272])
@@ -141,7 +137,6 @@ function almondPts(cx, cy, w, h) {
 function drawEye(cx, cy, w, h, pupilX, pupilD, tears) {
   const pts = almondPts(cx, cy, w, h);
 
-  // White of the eye
   noStroke(); fill(PAPER);
   shapeFrom(pts);
 
@@ -159,7 +154,6 @@ function drawEye(cx, cy, w, h, pupilX, pupilD, tears) {
   noFill(); stroke(INK); strokeWeight(6);
   shapeFrom(pts);
 
-  // Tears hang from exact points on the lower lid
   for (const [t, len] of tears) {
     const x = bez(cx + w / 2, cx + w * 0.22, cx - w * 0.22, cx - w / 2, t);
     const y = bez(cy, cy + h * 0.46, cy + h * 0.46, cy, t);
@@ -170,10 +164,20 @@ function drawEye(cx, cy, w, h, pupilX, pupilD, tears) {
   }
 }
 
-
 function drawLeftEye() {
   drawEye(206, 372, 94, 48, 234, 50, [[0.55, 14], [0.7, 18], [0.84, 12]]);
 }
 
 function drawRightEye() {
-  drawEye(392, 372, 82,
+  drawEye(392, 372, 82, 42, 410, 50, [[0.5, 12], [0.66, 16], [0.8, 10]]);
+}
+
+
+
+function drawMouth() {
+  noFill(); stroke(INK); strokeWeight(6);
+  shapeFrom(splinePts([
+    [262, 432], [266, 440], [282, 438], [290, 432],
+    [298, 438], [316, 440], [330, 436], [334, 432]
+  ]), false);
+}
