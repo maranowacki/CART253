@@ -1,6 +1,6 @@
-# TITLE OF PROJECT
+# Mr. Furious
 
-AUTHOR NAME
+Mara Nowacki
 
 [View this project online](URL_FOR_THE_RUNNING_PROJECT)
 

@@ -1,94 +1,145 @@
 /**
- * Mr. Furious
- * Mara, Alice, Nico
- *
- * A guy who becomes visibly furious! Notes for assisting classmates as well :)
+ * Swirling Cat
+ * Mara Nowacki :)
+ * 
  */
 
-"use strict";
 
-// Mr. Furious variable, creates his "group" aka variable 
-let mrFurious = {
-  // Position and size of Mr. Furious
-  x: 200,
-  y: 200,
-  size: 100,
-  // Anger Scale, determined by a named variable, starting value
-  rage: 0,
-  // Rage rate shows how quickly he angers, matches up with the other values so the sky changes equally as he angers.
-  rageRate: 0.004,
-  // How many pixels Mr. Furious shakes at max
-  maxShake: 8,
-  // Mr. Furious colors at both extremes, calm and furious 
-  calmFill: { r: 255, g: 225, b: 225 }, // Random Pink
-  furiousFill: { r: 255, g: 0, b: 0 } // BRIGHT Red
-};
 
-// The sky, colors based on when he is calm and furious. Sets both extremes.
-let sky = {
-  calm: { r: 160, g: 180, b: 200 }, // Random Sky Blue
-  furious: { r: 0, g: 0, b: 0 } // BLACK..
-};
 
-// The Bird, original position + size and rate of speed
-let bird = {
-  x: -20,
-  y: 80,
-  size: 20, 
-  speed: 3 // How fast it moves across the screen
-};
 
-/**
- * Create the canvas (DUH.)
- */
+const W = 500, H = 620;
+const cx = 250, cy = 320, R = 210;
+
+const SPIN_SPEED = 1.2;   // degrees per frame (negative = spin the other way)
+let spin = 0;             // current swirl angle in degrees
+
+const keys = [
+  [0, 50], [40, 56], [90, 78], [150, 112], [185, 118],
+  [215, 72], [240, 40], [265, 22], [300, 16], [322, 14]
+];
+
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(W, H);
 }
 
-/**
- * Draw (and update) Mr. Furious
- */
+function thickness(s) {
+  for (let i = 0; i < keys.length - 1; i++) {
+    const [s0, w0] = keys[i], [s1, w1] = keys[i + 1];
+    if (s <= s1) {
+      let t = (s - s0) / (s1 - s0);
+      t = t * t * (3 - 2 * t);
+      return lerp(w0, w1, t);
+    }
+  }
+  return keys[keys.length - 1][1];
+}
+
+// rotate a local offset (lx, ly) by angle ang (radians) around origin (ox, oy)
+function local(ox, oy, ang, lx, ly) {
+  const c = cos(ang), s = sin(ang);
+  return { x: ox + lx * c - ly * s, y: oy + lx * s + ly * c };
+}
+
+// take an unrotated canvas point and swirl it around the ring center
+function world(x, y) {
+  return local(cx, cy, radians(spin), x - cx, y - cy);
+}
+
+// ellipse rotated by ang, drawn from vertices
+function rEllipse(x, y, w, h, ang) {
+  beginShape();
+  for (let t = 0; t < TWO_PI; t += 0.1) {
+    const p = local(x, y, ang, (w / 2) * cos(t), (h / 2) * sin(t));
+    vertex(p.x, p.y);
+  }
+  endShape(CLOSE);
+}
+
+// triangle whose points are local to (ox, oy) rotated by ang
+function rTri(ox, oy, ang, x1, y1, x2, y2, x3, y3) {
+  const a = local(ox, oy, ang, x1, y1);
+  const b = local(ox, oy, ang, x2, y2);
+  const c = local(ox, oy, ang, x3, y3);
+  triangle(a.x, a.y, b.x, b.y, c.x, c.y);
+}
+
+function bodyPoint(s) {
+  const a = radians(-60 - s + spin);
+  const w = thickness(s);
+  const r = R - w / 2;
+  return { x: cx + r * cos(a), y: cy + r * sin(a), w, a };
+}
+
 function draw() {
-  // Build up his rage, capping it at 1 so it ends at the same time as the sky change. LOTS OF MATH..
-  mrFurious.rage = constrain(mrFurious.rage + mrFurious.rageRate, 0, 1);
-
-  // Sky: Based on Rage (The sky changes color to get darker based on anger) Lerp changes color gradually based on the extremes.
-  let skyR = lerp(sky.calm.r, sky.furious.r, mrFurious.rage); // Changes red value gradually
-  let skyG = lerp(sky.calm.g, sky.furious.g, mrFurious.rage); // Changes green value gradually
-  let skyB = lerp(sky.calm.b, sky.furious.b, mrFurious.rage); // Changes blue value gradually
-  background(skyR, skyG, skyB);
-
-  // Color: Blends the sky as he becomss more furious
-  let r = lerp(mrFurious.calmFill.r, mrFurious.furiousFill.r, mrFurious.rage); // Lets the color gradually change to the colors between the original and black
-  let g = lerp(mrFurious.calmFill.g, mrFurious.furiousFill.g, mrFurious.rage);
-  let b = lerp(mrFurious.calmFill.b, mrFurious.furiousFill.b, mrFurious.rage);
-
-  // Shaking: Makes him randomly shake on each axis with a limit so he doesn't fly off the canvas ._.
-  let shake = map(mrFurious.rage, 0, 1, 0, mrFurious.maxShake);
-  let shakeX = mrFurious.x + random(-shake, shake);
-  let shakeY = mrFurious.y + random(-shake, shake);
-
-  // Draw Mr. Furious as a coloured circle 
-  push();
+  background(255);
   noStroke();
-  fill(r, g, b);
-  ellipse(shakeX, shakeY, mrFurious.size);
-  pop();
+  fill(0);
 
-  // Looping Bird, comes back around even after Mr. Furious is done changing the weather to make him BEYOND furious C:
-  bird.x = bird.x + bird.speed;
-  if (bird.x > width + bird.size) {
-    bird.x = -bird.size;
+  spin += SPIN_SPEED;
+
+  // body + tail along the ring
+  const S_END = 322;
+  for (let s = -4; s <= S_END; s += 0.5) {
+    const p = bodyPoint(s);
+    circle(p.x, p.y, p.w);
   }
 
-  // Draw the bird as a simple triangle, smaller size = bigger bird (WEIRD!)
-  push();
+  // tail curl: a shrinking spiral continuing in the same direction
+  const end = bodyPoint(S_END);
+  const inward = createVector(cx - end.x, cy - end.y).normalize();
+  const r0 = 30;
+  const c = createVector(end.x + inward.x * r0, end.y + inward.y * r0);
+  const phi0 = atan2(end.y - c.y, end.x - c.x);
+  const sway = 0.06 * sin(frameCount * 0.03);   // tiny, lazy tail twitch
+  for (let u = 0; u <= 1; u += 0.004) {
+    const phi = phi0 - u * TWO_PI * (1.25 + sway);
+    const r = r0 * (1 - 0.82 * u);
+    circle(c.x + r * cos(phi), c.y + r * sin(phi), lerp(14, 9, u));
+  }
+
+  const sp = radians(spin);
+
+  // front leg + paw
+  const sx = cx + 150 * cos(radians(-112));
+  const sy = cy + 150 * sin(radians(-112));
+  const legA = world(sx - 4, sy - 4);
+  const legB = world(sx + 18, sy + 40);
+  stroke(0);
+  strokeWeight(30);
+  strokeCap(ROUND);
+  line(legA.x, legA.y, legB.x, legB.y);
   noStroke();
-  fill(40, 40, 40);
-  triangle( // Simple bird.. for now
-    bird.x, bird.y,
-    bird.x - bird.size, bird.y + bird.size / 2, 
-    bird.x - bird.size, bird.y - bird.size / 2
-  );
-  pop();
+  const frontPaw = world(sx + 28, sy + 48);
+  rEllipse(frontPaw.x, frontPaw.y, 44, 36, sp);
+
+  // back paw
+  const backPaw = world(cx + 72, cy + 150);
+  rEllipse(backPaw.x, backPaw.y, 44, 30, sp);
+
+  drawHead(sp);
+}
+
+function drawHead(sp) {
+  const h = world(cx + 108, cy - 132);
+  const ha = sp + radians(14);
+
+  fill(0);
+  rEllipse(h.x, h.y, 118, 92, ha);
+  // ears
+  rTri(h.x, h.y, ha, -56, -8, -46, -68, -10, -40);
+  rTri(h.x, h.y, ha, 14, -42, 54, -62, 56, -4);
+
+  drawEye(h.x, h.y, ha, -20, 2, -18);
+  drawEye(h.x, h.y, ha, 24, 10, 12);
+}
+
+function drawEye(hx, hy, ha, x, y, angle) {
+  const e = local(hx, hy, ha, x, y);
+  const ea = ha + radians(angle);
+  fill(255);
+  rEllipse(e.x, e.y, 22, 13, ea);
+  fill(0);
+  const p = local(e.x, e.y, ea, 3, 1);
+  rEllipse(p.x, p.y, 4, 11, ea);
 }
