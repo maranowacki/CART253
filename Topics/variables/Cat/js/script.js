@@ -1,74 +1,12 @@
 /**
- * Swirling Cat
+ * Cat Tail
  * Mara Nowacki :)
  * 
  */
 
-
-
-
-
-const W = 500, H = 620;
-const cx = 250, cy = 320, R = 210;
-
-const SPIN_SPEED = 1.2;   // degrees per frame (negative = spin the other way)
-let spin = 0;             // current swirl angle in degrees
-
-const keys = [
-  [0, 50], [40, 56], [90, 78], [150, 112], [185, 118],
-  [215, 72], [240, 40], [265, 22], [300, 16], [322, 14]
-];
-
 function setup() {
-  createCanvas(W, H);
-}
-
-function thickness(s) {
-  for (let i = 0; i < keys.length - 1; i++) {
-    const [s0, w0] = keys[i], [s1, w1] = keys[i + 1];
-    if (s <= s1) {
-      let t = (s - s0) / (s1 - s0);
-      t = t * t * (3 - 2 * t);
-      return lerp(w0, w1, t);
-    }
-  }
-  return keys[keys.length - 1][1];
-}
-
-// rotate a local offset (lx, ly) by angle ang (radians) around origin (ox, oy)
-function local(ox, oy, ang, lx, ly) {
-  const c = cos(ang), s = sin(ang);
-  return { x: ox + lx * c - ly * s, y: oy + lx * s + ly * c };
-}
-
-// take an unrotated canvas point and swirl it around the ring center
-function world(x, y) {
-  return local(cx, cy, radians(spin), x - cx, y - cy);
-}
-
-// ellipse rotated by ang, drawn from vertices
-function rEllipse(x, y, w, h, ang) {
-  beginShape();
-  for (let t = 0; t < TWO_PI; t += 0.1) {
-    const p = local(x, y, ang, (w / 2) * cos(t), (h / 2) * sin(t));
-    vertex(p.x, p.y);
-  }
-  endShape(CLOSE);
-}
-
-// triangle whose points are local to (ox, oy) rotated by ang
-function rTri(ox, oy, ang, x1, y1, x2, y2, x3, y3) {
-  const a = local(ox, oy, ang, x1, y1);
-  const b = local(ox, oy, ang, x2, y2);
-  const c = local(ox, oy, ang, x3, y3);
-  triangle(a.x, a.y, b.x, b.y, c.x, c.y);
-}
-
-function bodyPoint(s) {
-  const a = radians(-60 - s + spin);
-  const w = thickness(s);
-  const r = R - w / 2;
-  return { x: cx + r * cos(a), y: cy + r * sin(a), w, a };
+  createCanvas(490, 640);
+  noLoop();
 }
 
 function draw() {
@@ -76,70 +14,73 @@ function draw() {
   noStroke();
   fill(0);
 
-  spin += SPIN_SPEED;
+  taperedPath([
+    [262, 604], [200, 602], [130, 594], [70, 582],
+    [34, 562], [40, 538], [90, 524], [160, 520],
+    [230, 522], [300, 528], [365, 534], [398, 546],
+    [382, 556], [330, 556], [285, 550]
+  ], 5, 9);
 
-  // body + tail along the ring
-  const S_END = 322;
-  for (let s = -4; s <= S_END; s += 0.5) {
-    const p = bodyPoint(s);
-    circle(p.x, p.y, p.w);
-  }
-
-  // tail curl: a shrinking spiral continuing in the same direction
-  const end = bodyPoint(S_END);
-  const inward = createVector(cx - end.x, cy - end.y).normalize();
-  const r0 = 30;
-  const c = createVector(end.x + inward.x * r0, end.y + inward.y * r0);
-  const phi0 = atan2(end.y - c.y, end.x - c.x);
-  const sway = 0.06 * sin(frameCount * 0.03);   // tiny, lazy tail twitch
-  for (let u = 0; u <= 1; u += 0.004) {
-    const phi = phi0 - u * TWO_PI * (1.25 + sway);
-    const r = r0 * (1 - 0.82 * u);
-    circle(c.x + r * cos(phi), c.y + r * sin(phi), lerp(14, 9, u));
-  }
-
-  const sp = radians(spin);
-
-  // front leg + paw
-  const sx = cx + 150 * cos(radians(-112));
-  const sy = cy + 150 * sin(radians(-112));
-  const legA = world(sx - 4, sy - 4);
-  const legB = world(sx + 18, sy + 40);
-  stroke(0);
-  strokeWeight(30);
-  strokeCap(ROUND);
-  line(legA.x, legA.y, legB.x, legB.y);
-  noStroke();
-  const frontPaw = world(sx + 28, sy + 48);
-  rEllipse(frontPaw.x, frontPaw.y, 44, 36, sp);
-
-  // back paw
-  const backPaw = world(cx + 72, cy + 150);
-  rEllipse(backPaw.x, backPaw.y, 44, 30, sp);
-
-  drawHead(sp);
+  blob([
+    // ears
+    [197, 46], [216, 58], [229, 26],
+    // back of head and neck (right side)
+    [262, 42], [295, 68], [318, 108], [332, 170],
+    [326, 240], [308, 310], [292, 380], [282, 450],
+    [278, 510], [276, 548],
+    // base
+    [220, 552], [160, 548],
+    // chest and front of neck (left side)
+    [156, 495], [165, 440], [190, 390], [228, 330],
+    [262, 265], [282, 212], [288, 178],
+    // chin and face
+    [262, 176], [232, 174], [210, 164], [199, 148],
+    [203, 128], [200, 100], [206, 76]
+  ]);
 }
 
-function drawHead(sp) {
-  const h = world(cx + 108, cy - 132);
-  const ha = sp + radians(14);
 
-  fill(0);
-  rEllipse(h.x, h.y, 118, 92, ha);
-  // ears
-  rTri(h.x, h.y, ha, -56, -8, -46, -68, -10, -40);
-  rTri(h.x, h.y, ha, 14, -42, 54, -62, 56, -4);
-
-  drawEye(h.x, h.y, ha, -20, 2, -18);
-  drawEye(h.x, h.y, ha, 24, 10, 12);
+function blob(pts) {
+  beginShape();
+  let n = pts.length;
+  for (let i = 0; i < n; i++) {
+    let p0 = pts[(i - 1 + n) % n], p1 = pts[i];
+    let p2 = pts[(i + 1) % n], p3 = pts[(i + 2) % n];
+    for (let t = 0; t < 1; t += 0.1) {
+      vertex(crPoint(p0[0], p1[0], p2[0], p3[0], t),
+             crPoint(p0[1], p1[1], p2[1], p3[1], t));
+    }
+  }
+  endShape(CLOSE);
 }
 
-function drawEye(hx, hy, ha, x, y, angle) {
-  const e = local(hx, hy, ha, x, y);
-  const ea = ha + radians(angle);
-  fill(255);
-  rEllipse(e.x, e.y, 22, 13, ea);
-  fill(0);
-  const p = local(e.x, e.y, ea, 3, 1);
-  rEllipse(p.x, p.y, 4, 11, ea);
+
+function taperedPath(pts, rStart, rEnd) {
+  let p = [pts[0], ...pts, pts[pts.length - 1]];
+  let samples = [];
+  for (let i = 0; i < p.length - 3; i++) {
+    for (let t = 0; t < 1; t += 0.02) {
+      samples.push([
+        crPoint(p[i][0], p[i + 1][0], p[i + 2][0], p[i + 3][0], t),
+        crPoint(p[i][1], p[i + 1][1], p[i + 2][1], p[i + 3][1], t)
+      ]);
+    }
+  }
+  for (let i = 0; i < samples.length; i++) {
+    let u = i / (samples.length - 1);
+    let r = lerp(rStart, rEnd, min(u * 4, 1)); 
+    circle(samples[i][0], samples[i][1], r * 2);
+  }
+}
+
+
+function crPoint(p0, p1, p2, p3, t) {
+  let t2 = t * t;
+  let t3 = t2 * t;
+  return 0.5 * (
+    2 * p1 +
+    (-p0 + p2) * t +
+    (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+    (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+  );
 }
