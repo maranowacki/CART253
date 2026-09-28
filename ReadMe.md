@@ -44,7 +44,7 @@
 
 <div align="center">
   <a href="https://maranowacki.github.io/CART253/Topics/variables/Catgirl/">
-    <img src="Catgirl.png" width="180">
+    <img src="Cat.png" width="180">
   </a>
   &nbsp;&nbsp;
   <a href="https://maranowacki.github.io/CART253/Topics/variables/Cat/">
