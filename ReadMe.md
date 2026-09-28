@@ -43,11 +43,11 @@
 <br>
 
 <div align="center">
-  <a href="LINK_4">
+  <a href="https://maranowacki.github.io/CART253/Topics/variables/Cat/">
     <img src="Cat.png" width="180">
   </a>
   &nbsp;&nbsp;
-  <a href="LINK_5">
+  <a href="https://maranowacki.github.io/CART253/Topics/variables/Catgirl/">
     <img src="Cat2.png" width="180">
   </a>
   &nbsp;&nbsp;
