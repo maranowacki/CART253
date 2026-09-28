@@ -43,5 +43,21 @@
 <br>
 
 <div align="center">
+  <a href="LINK_4">
+    <img src="Cat.png" width="180">
+  </a>
+  &nbsp;&nbsp;
+  <a href="LINK_5">
+    <img src="Cat2.png" width="180">
+  </a>
+  &nbsp;&nbsp;
+  <a href="LINK_6">
+    <img src="image6.png" width="180">
+  </a>
+</div>
+
+<br>
+
+<div align="center">
   <sub>Personal archive — CART 253</sub>
 </div>
