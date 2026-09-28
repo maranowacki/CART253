@@ -18,6 +18,10 @@
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
     <img src="journal.png" width="50">
   </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/maranowacki/CART253/blob/main/Topics/Prototyping/Weird%20Prototype/js/script.js">
+    <img src="code.png" width="50">
+  </a>
 </div>
 
 <br><br>
