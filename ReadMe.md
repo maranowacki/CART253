@@ -52,7 +52,7 @@
   </a>
   &nbsp;&nbsp;
   <a href="LINK_6">
-    <img src="image6.png" width="180">
+    <img src="Venusflytrap.png" width="180">
   </a>
 </div>
 
