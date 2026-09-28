@@ -19,7 +19,7 @@
     <img src="journal.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/maranowacki/CART253/blob/main/Topics/Prototyping/Weird%20Prototype/js/script.js">
+  <a href="https://github.com/maranowacki/CART253/blob/main/Links%20Pathway.md">
     <img src="code.png" width="50">
   </a>
 </div>
