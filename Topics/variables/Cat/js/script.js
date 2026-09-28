@@ -4,9 +4,20 @@
  * 
  */
 
+let tailSpeed = 0.05;
+let tailSwing = 14;
+let tailWave = 0.5;
+let tailReach = 8;
+
+let tailRest = [
+  [262, 604], [200, 602], [130, 594], [70, 582],
+  [34, 562], [40, 538], [90, 524], [160, 520],
+  [230, 522], [300, 528], [365, 534], [398, 546],
+  [382, 556], [330, 556], [285, 550]
+];
+
 function setup() {
   createCanvas(490, 640);
-  noLoop();
 }
 
 function draw() {
@@ -14,31 +25,35 @@ function draw() {
   noStroke();
   fill(0);
 
-  taperedPath([
-    [262, 604], [200, 602], [130, 594], [70, 582],
-    [34, 562], [40, 538], [90, 524], [160, 520],
-    [230, 522], [300, 528], [365, 534], [398, 546],
-    [382, 556], [330, 556], [285, 550]
-  ], 5, 9);
+  let time = frameCount * tailSpeed;
+  let tail = animateTail(tailRest, time);
+  taperedPath(tail, 5, 9);
 
   blob([
-    // ears
     [197, 46], [216, 58], [229, 26],
-    // back of head and neck (right side)
     [262, 42], [295, 68], [318, 108], [332, 170],
     [326, 240], [308, 310], [292, 380], [282, 450],
     [278, 510], [276, 548],
-    // base
     [220, 552], [160, 548],
-    // chest and front of neck (left side)
     [156, 495], [165, 440], [190, 390], [228, 330],
     [262, 265], [282, 212], [288, 178],
-    // chin and face
     [262, 176], [232, 174], [210, 164], [199, 148],
     [203, 128], [200, 100], [206, 76]
   ]);
 }
 
+function animateTail(rest, time) {
+  let moved = [];
+  for (let i = 0; i < rest.length; i++) {
+    let strength = max(0, 1 - i / tailReach);
+    strength = strength * strength;
+    let phase = time - i * tailWave;
+    let dx = cos(phase) * tailSwing * 0.5 * strength;
+    let dy = sin(phase) * tailSwing * strength;
+    moved.push([rest[i][0] + dx, rest[i][1] + dy]);
+  }
+  return moved;
+}
 
 function blob(pts) {
   beginShape();
@@ -54,7 +69,6 @@ function blob(pts) {
   endShape(CLOSE);
 }
 
-
 function taperedPath(pts, rStart, rEnd) {
   let p = [pts[0], ...pts, pts[pts.length - 1]];
   let samples = [];
@@ -68,11 +82,10 @@ function taperedPath(pts, rStart, rEnd) {
   }
   for (let i = 0; i < samples.length; i++) {
     let u = i / (samples.length - 1);
-    let r = lerp(rStart, rEnd, min(u * 4, 1)); 
+    let r = lerp(rStart, rEnd, min(u * 4, 1));
     circle(samples[i][0], samples[i][1], r * 2);
   }
 }
-
 
 function crPoint(p0, p1, p2, p3, t) {
   let t2 = t * t;
