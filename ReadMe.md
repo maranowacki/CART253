@@ -12,7 +12,7 @@
 
 <div align="center">
   <a href="https://github.com/maranowacki/CART253/blob/main/Prototypes%20Pathway.md">
-    <img src="Paintbrush.png" width="50">
+    <img src="paintbrush.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
