@@ -1,7 +1,7 @@
 
 /**
  * Conditionals Challenge
- * Mara Nowacki
+ * Mara Nowacki, Nico Fournier
  */
 
 // PRE NOTES:
