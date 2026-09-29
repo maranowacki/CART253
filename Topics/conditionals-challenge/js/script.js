@@ -11,15 +11,10 @@
 // PRE NOTES:
 // All colors can be changed. All positions and sizes can be changed.
 // NOTE: Circles always have their origin at their center.
-// Organization is key, so make sure to read the notes and understand
-// what they mean and what they control.
-// Constraints are used when you need to make sure something stays
-// between a minimum and maximum value (EX: line 115).
-// All lines up to line 93 are things we learned in previous weeks:
-// very easy functions + drawings.
-// Constants (CONST) are used for things that do not or will not change.
-// For example, we use constants when checking if the puck overlaps
-// the target, so the target changes color.
+// Organization is key, so make sure to read the notes and understand what they mean and what they control.
+// Constraints are used when you need to make sure something stays between a minimum and maximum value (EX: line 115).
+// All lines up to line 93 are things we learned in previous weeks: very easy functions + drawings.
+// Constants (CONST) are used for things that do not or will not change. For example, we use constants when checking if the puck overlapsthe target, so the target changes color.
 
 "use strict";
 
