@@ -12,7 +12,7 @@
 
 "use strict";
 
-// PUCK = RED CIRCLE WE PUSH AROUND WITH THE USER
+// PUCK = CIRCLE WE PUSH AROUND WITH THE USER
 const puck = {
   x: 200,
   y: 200,
