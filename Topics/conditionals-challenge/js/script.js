@@ -4,43 +4,54 @@
 
  */
 
+// PRE NOTES:
+// All colors can be changed, all positions and scales/sizes can be changed (NOTE: CIRCLES ALWAYS HAVE THE ORIGIN AT THEIR CENTER)
+// Organization is key when it comes to this, so make sure to read the notes and understand what they mean and who they control
+// Constrains are used for when you need to make sure something stays between a minimum and maximum value (EX: Line 115)
+// All lines up to line 93 are things we learned in previous weeks, very easy functions + drawings
+// Constants (CONST) are used for things that do not or will not change, so for example on line 106, we use constants so the puck overlaps over the target, so the target changes color
+// 
+
+
+
+
+
 
 "use strict";
 
-// puck = red circle that can be pushed by the user's cursor circle
+// PUCK = RED CIRCLE WE PUSH AROUND WITH THE USER
 const puck = {
-  x: 200, // starting x position (center of the canvas)
-  y: 200, // starting y position (center of the canvas)
-  size: 100, // diameter of the puck
-  fill: "#ff0000" // red
+  x: 200, 
+  y: 200,
+  size: 100,
+  fill: "#ff0000" 
 };
 
-// the user's cursor circle
+// USER
 const user = {
-  x: undefined, // will be mouseX
-  y: undefined, // will be mouseY
-  size: 75, // diameter of the user circle
-  fill: "#000000" // black
+  x: undefined, 
+  y: undefined, 
+  size: 75, 
+  fill: "#000000"
 };
 
-// target = circle we want to push the red puck/circle into
+// TARGET
 const target = {
-  x: 320, // placed in the top right so the puck must be moved quite a bit to reach it
+  x: 320, 
   y: 80,
-  size: 120, // bigger than the puck so it can fit inside
-  // target has two colors (puck in, puck out) as well as a current color (starts as puck out)
+  size: 120, // MAKE THE PUCK SMALLER SO IT CAN FIT IN THE TARGET :)
+  // TARGET HAS TWO COLORS, PUCK OFF AND PUCK ON
   fills: {
-    noOverlap: "#cc3333", // colour when the puck is NOT on the target (red)
-    overlap: "#33cc33" // colour when the puck IS on the target (green)
+    noOverlap: "#cc3333", // COLOR WHEN PUCK IS NOT OVERLAPPING TARGET (R)
+    overlap: "#33cc33" // COLOR WHEN PUCK IS OVERLAPPING TARGET (G)
   },
-  fill: "#cc3333" // the colour currently being used
+  fill: "#cc3333" // CURRENT TARGET COLOR
 };
 
 /**
- * Create the canvas
+ * C
  */
 function setup() {
-  // A 400 x 400 pixel canvas
   createCanvas(400, 400);
 }
 
@@ -48,23 +59,22 @@ function setup() {
  * Move the user circle, check for overlap, draw the circles
  */
 function draw() {
-  // drawn every frame for a 'live' effect
-  background("#aaaaaa");
+  // DRAWN EVERY FRAME
+  background("#ffffff"); // WHITE BACKGROUND
 
-  // move user's cursor circle to the mouse position
+  // MOVE USER CIRCLE TO MOUSE POSITION AS IF MOVES
   moveUser();
 
-  // push the puck away from the user's circle if they're touching,
-  // then keep the puck inside the canvas
+  // PUSH PUCK AWAY FROM USER IF THEY OVERLAP
   movePuck();
 
-  // check if the puck is on the target, change it accordingly
+  // CHECK IF PUCK IS ON TARGET (OVERLAPPING)
   checkTarget();
 
-  // draw target FIRST so it appears behind both the user's cursor circle and the puck
+  // DRAW TARGET FIRST SO EVERYTHING SITS ON TOP
   drawTarget();
 
-  // draw user's cursor circle and puck on top AFTER target has been drawn
+  // DRAW CURSOR AFTER PUCK IS DRAWN
   drawUser();
   drawPuck();
 }
@@ -72,77 +82,69 @@ function draw() {
 /**
  */
 function moveUser() {
-  // user's cursor circle follows mouse :)
+  // USER FOLLOWS MOUSE
   user.x = mouseX;
   user.y = mouseY;
 }
 
 /**
- * push the puck away from the user's cursor circle if they overlap, then make sure the puck stays fully on the canvas
  */
 function movePuck() {
-  // calculate difference between origins of user's cursor circle and puck circle
+  // CALCULATE DISTANCE BETWEEN USER AND PUCK ORIGINS
   const d = dist(user.x, user.y, puck.x, puck.y);
 
-  // two circles overlap when the distance between their centers is less than the sum of their radius = size / 2
+  // USER AND PUCK OVERLAP, IF THE TEST RUNS TRUE, PUSH THE PUCK AWAY FROM THE USER
   const overlap = (d < user.size / 2 + puck.size / 2);
 
-  // only push the puck if the circles make contact/are touching
+  // ONLY PUSH THE USER AWAY IF THEY OVERLAP
   if (overlap) {
-    // move puck based on x and y distance from the user
-    // puck.x - user.x is positive if the puck is to the RIGHT of the user
-    // so the puck gets pushed right. If it's negative, it gets pushed left
     const dx = puck.x - user.x;
-    // y: positive means the puck is BELOW the user, so push down
     const dy = puck.y - user.y;
 
-    // Divide by 10 so the push isn't too powerful (otherwise puck would fly away off the canvas)
+    // DIVIDE BY 10 SO THE PUSH ISNT TOO POWERFUL, EASIER TO CONTROL PUCK
     puck.x = puck.x + dx / 10;
     puck.y = puck.y + dy / 10;
-  }
-  // no overlap = puck stays where it is
 
-  // keep the puck fully on the canvas: its center can't get closer
-  // to an edge than its radius (size / 2)
+  // KEEP PUCK ON CANVAS
   puck.x = constrain(puck.x, puck.size / 2, width - puck.size / 2);
   puck.y = constrain(puck.y, puck.size / 2, height - puck.size / 2);
 }
 
 /**
- * Checks if the puck overlaps the target and changes the target colour
+ * CHECKS IF PUCK IS OVERLAPPING ON TARGET AND CHANGES COLOR ACCORDINGLY
  */
 function checkTarget() {
-  // Distance between the centres of the puck and the target
+  // DISTANCE BETWEEN PUCK CENTERS AND TARGET
   const d = dist(puck.x, puck.y, target.x, target.y);
 
-  // Same overlap test as before: distance less than the sum of the radii
-  const overlap = (d < puck.size / 2 + target.size / 2);
+  // OVERLAP TEST, SAME AS BEFORRE
+  const overlap = (d < puck.size / 2 + target.size / 2); 
 
   if (overlap) {
-    // The puck is on the target, so show the "success" colour (green)
+    // PUCK IS ON TARGET = FILLS GREEN
     target.fill = target.fills.overlap;
   }
   else {
-    // The puck is not on the target, so show the "no overlap" colour (red)
+    // PUCK ISNT OVERLAPPING ON TARGET = FILLS RED
     target.fill = target.fills.noOverlap;
   }
 }
 
 /**
- * display the target
+  // DISPLAY TARGET CIRCLE
  */
 function drawTarget() {
-  // push + pop allow these style settings to not bleed onto other objects
+  // PUSH + POP MAKE SURE THE TARGETS COLOR DOES NOT EFFECT THE OTHER CIRCLES
   push();
   noStroke();
-  // use whatever colour 'checkTarget' decided on this frame
+  // USE WHATEVER COLOR IS CURRENTLY SET FOR THE TARGET (CHANGES DEPENDING ON PUCK PLACEMENT)
   fill(target.fill);
   ellipse(target.x, target.y, target.size);
   pop();
 }
 
 /**
- * displays the user's cursor circle
+  // DISPLAYS USER
  */
 function drawUser() {
   push();
@@ -153,7 +155,7 @@ function drawUser() {
 }
 
 /**
- * displays the puck circle
+  // DISPLAYS PUCK  
  */
 function drawPuck() {
   push();
