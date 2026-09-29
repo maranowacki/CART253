@@ -59,5 +59,5 @@
 <br>
 
 <div align="center">
-  <sub>Personal archive — CART 253</sub>
+  <img src="sparkles.gif" width="180">
 </div>
