@@ -59,5 +59,5 @@
 <br>
 
 <div align="center">
-  <img src="bats.gif" width="650">
+  <img src="GothicDivider.gif" width="650">
 </div>
