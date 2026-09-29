@@ -11,12 +11,12 @@
 <br>
 
 <div align="center">
-  <a href="https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping">
-    <img src="PumpkinIcon.png" width="50">
+  <a href="https://github.com/maranowacki/CART253/blob/main/Prototypes%20Pathway.md">
+    <img src="Paintbrush.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
-    <img src="BatIcon.png" width="50">
+    <img src="PumpkinIcon.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/Links%20Pathway.md">
