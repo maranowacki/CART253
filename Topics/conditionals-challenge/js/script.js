@@ -1,6 +1,8 @@
+
 /**
  * Conditionals Challenge
  * Mara Nowacki
+ */
 
 // PRE NOTES:
 // All colors can be changed. All positions and sizes can be changed.
@@ -12,12 +14,12 @@
 
 "use strict";
 
-// PUCK = CIRCLE WE PUSH AROUND WITH THE USER
+// PUCK = RED CIRCLE WE PUSH AROUND WITH THE USER
 const puck = {
   x: 200,
   y: 200,
   size: 100,
-  fill: "#454545"
+  fill: "#ff0000"
 };
 
 // USER
