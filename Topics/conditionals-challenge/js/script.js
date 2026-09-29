@@ -2,12 +2,6 @@
  * Conditionals Challenge
  * Mara Nowacki
 
- */
-/**
- * Conditionals Challenge
- * Mara Nowacki
- */
-
 // PRE NOTES:
 // All colors can be changed. All positions and sizes can be changed.
 // NOTE: Circles always have their origin at their center.
@@ -23,7 +17,7 @@ const puck = {
   x: 200,
   y: 200,
   size: 100,
-  fill: "#ff0000"
+  fill: "#454545"
 };
 
 // USER
