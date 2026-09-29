@@ -1,0 +1,73 @@
+{
+    "workbench.colorTheme": "Light Modern",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.productIconTheme": "Default",
+
+    "editor.fontFamily": "Comfortaa",
+    "terminal.integrated.fontFamily": "JetBrains Mono",
+
+    "editor.fontSize": 15,
+    "editor.lineHeight": 24,
+    "editor.fontLigatures": true,
+    "editor.minimap.enabled": false,
+
+    
+    "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#917F88",
+    "titleBar.activeForeground": "#FFF8FA",
+
+    "activityBar.background": "#9F8D96",
+    "activityBar.foreground": "#FFF8FA",
+
+    "activityBarBadge.background": "#A37E84",
+    "activityBarBadge.foreground": "#FFFFFF",
+
+    "sideBar.background": "#FBF7F8",
+    "sideBar.foreground": "#5C4A55",
+    "sideBarTitle.foreground": "#836871",
+
+    "editor.background": "#FFFDFD",
+    "editor.foreground": "#5C4A55",
+
+    "editorCursor.foreground": "#836871",
+
+    "editorLineNumber.foreground": "#C9BEC3",
+    "editorLineNumber.activeForeground": "#836871",
+
+    "tab.activeBackground": "#E7DDE1",
+    "tab.activeForeground": "#5C4A55",
+
+    "tab.inactiveBackground": "#F7F2F4",
+    "tab.inactiveForeground": "#A79AA0",
+
+    "statusBar.background": "#917F88",
+    "statusBar.foreground": "#FFF8FA",
+
+    "terminal.background": "#FFFDFD",
+    "terminal.foreground": "#5C4A55",
+
+    "panel.background": "#FBF7F8",
+    "panel.border": "#DED3D8",
+
+    "editor.selectionBackground": "#E7DDE1",
+    "editor.lineHighlightBackground": "#FAF6F7",
+
+    "list.hoverBackground": "#F4EEF0",
+    "list.activeSelectionBackground": "#E7DDE1",
+
+    "button.background": "#836871",
+    "button.foreground": "#FFFFFF",
+
+    "input.background": "#FFFFFF",
+    "input.border": "#CDBFC5",
+
+    "dropdown.background": "#FFFFFF",
+
+    "scrollbarSlider.background": "#D8CCD1",
+    "scrollbarSlider.hoverBackground": "#B59FA8",
+
+    "editorBracketHighlight.foreground1": "#836871",
+    "editorBracketHighlight.foreground2": "#A37E84",
+    "editorBracketHighlight.foreground3": "#CDBFC5"
+}
+}

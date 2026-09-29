@@ -9,8 +9,8 @@
 
 // puck = red circle that can be pushed by the user's cursor circle
 const puck = {
-  x: 200, // starting x position (centre of the canvas)
-  y: 200, // starting y position (centre of the canvas)
+  x: 200, // starting x position (center of the canvas)
+  y: 200, // starting y position (center of the canvas)
   size: 100, // diameter of the puck
   fill: "#ff0000" // red
 };
@@ -54,7 +54,8 @@ function draw() {
   // move user's cursor circle to the mouse position
   moveUser();
 
-  // idk how to explain this part..
+  // push the puck away from the user's circle if they're touching,
+  // then keep the puck inside the canvas
   movePuck();
 
   // check if the puck is on the target, change it accordingly
@@ -69,7 +70,6 @@ function draw() {
 }
 
 /**
- * Sets the user position to the mouse position
  */
 function moveUser() {
   // user's cursor circle follows mouse :)
@@ -78,7 +78,7 @@ function moveUser() {
 }
 
 /**
- * push the puck away from the user's cursor circle if they overlap (the user is touching the puck)
+ * push the puck away from the user's cursor circle if they overlap, then make sure the puck stays fully on the canvas
  */
 function movePuck() {
   // calculate difference between origins of user's cursor circle and puck circle
@@ -101,10 +101,15 @@ function movePuck() {
     puck.y = puck.y + dy / 10;
   }
   // no overlap = puck stays where it is
+
+  // keep the puck fully on the canvas: its center can't get closer
+  // to an edge than its radius (size / 2)
+  puck.x = constrain(puck.x, puck.size / 2, width - puck.size / 2);
+  puck.y = constrain(puck.y, puck.size / 2, height - puck.size / 2);
 }
 
 /**
- * STEP 4: Checks if the puck overlaps the target and changes the target colour
+ * Checks if the puck overlaps the target and changes the target colour
  */
 function checkTarget() {
   // Distance between the centres of the puck and the target
@@ -124,7 +129,7 @@ function checkTarget() {
 }
 
 /**
- * display the target 
+ * display the target
  */
 function drawTarget() {
   // push + pop allow these style settings to not bleed onto other objects
