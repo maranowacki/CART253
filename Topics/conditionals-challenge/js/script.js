@@ -104,6 +104,7 @@ function movePuck() {
     // DIVIDE BY 10 SO THE PUSH ISNT TOO POWERFUL, EASIER TO CONTROL PUCK
     puck.x = puck.x + dx / 10;
     puck.y = puck.y + dy / 10;
+  }
 
   // KEEP PUCK ON CANVAS
   puck.x = constrain(puck.x, puck.size / 2, width - puck.size / 2);
@@ -163,5 +164,6 @@ function drawPuck() {
   fill(puck.fill);
   ellipse(puck.x, puck.y, puck.size);
   pop();
+
 
 }
