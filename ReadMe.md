@@ -1,22 +1,22 @@
 <div align="center">
-  <img src="CART253.png" width="600">
+  <img src="Slime253.png" width="600">
 </div>
 
 <br><br><br><br>
 
 <div align="center">
-  <img src="GothicLinks.png" width="400">
+  <img src="SlimeLinks.png" width="400">
 </div>
 
 <br>
 
 <div align="center">
   <a href="https://github.com/maranowacki/CART253/tree/main/Topics/Prototyping">
-    <img src="paintbrush.png" width="50">
+    <img src="PumpkinIcon.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/JournalWIP.md">
-    <img src="journal.png" width="50">
+    <img src="BatIcon.png" width="50">
   </a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://github.com/maranowacki/CART253/blob/main/Links%20Pathway.md">
@@ -57,7 +57,3 @@
 </div>
 
 <br>
-
-<div align="center">
-  <img src="GothicDivider.gif" width="650">
-</div>
