@@ -5,11 +5,11 @@
  */
 
 
-// Colors
+
 let ink = 0;
 let paper = 255;
 
-// Eye positions and sizes
+
 let leftEyeX = 206;
 let rightEyeX = 392;
 let eyeY = 372;
@@ -18,7 +18,7 @@ let leftEyeH = 42;
 let rightEyeW = 82;
 let rightEyeH = 38;
 
-// Blink settings
+
 let blinkEvery = 50;   
 let blinkLength = 8;  
 let eyeOpen = 1;     
@@ -31,14 +31,13 @@ function setup() {
 function draw() {
   background(paper);
 
-  // ----- Blink -----
   if (frameCount % blinkEvery < blinkLength) {
     eyeOpen = 0.08;
   } else {
     eyeOpen = 1;
   }
 
-  // ----- Hair -----
+
   fill(ink);
   noStroke();
   beginShape();
