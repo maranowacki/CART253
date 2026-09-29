@@ -49,7 +49,7 @@ const target = {
 };
 
 /**
- * C
+ 
  */
 function setup() {
   createCanvas(400, 400);
@@ -163,4 +163,5 @@ function drawPuck() {
   fill(puck.fill);
   ellipse(puck.x, puck.y, puck.size);
   pop();
+
 }
