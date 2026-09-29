@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Slime253.png" width="600">
+  <img src="Slime253.png" width="800">
 </div>
 
 <br><br><br><br>
