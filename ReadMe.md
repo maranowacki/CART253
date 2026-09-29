@@ -59,5 +59,5 @@
 <br>
 
 <div align="center">
-  <img src="sparkles.gif" width="450">
+  <img src="sparkles.gif" width="650">
 </div>
