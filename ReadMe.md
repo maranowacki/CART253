@@ -51,7 +51,7 @@
     <img src="Cat2.png" width="180">
   </a>
   &nbsp;&nbsp;
-  <a href="LINK_6">
+  <a href="https://maranowacki.github.io/CART253/Topics/variables/Plant/">
     <img src="Venusflytrap.png" width="180">
   </a>
 </div>
