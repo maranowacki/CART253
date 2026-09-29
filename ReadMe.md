@@ -61,8 +61,3 @@
 <div align="center">
   <sub>Personal archive — CART 253</sub>
 </div>
-
-<div align="center">
- <img src="sparkles.gif" width ="180">
- 
- <br>
