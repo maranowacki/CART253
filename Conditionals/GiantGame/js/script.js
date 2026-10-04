@@ -23,6 +23,14 @@ let breath = 0;
 let breathSpeed = 0.15;
 let breathingIn = true; // true = belly getting bigger
 
+// Player Position
+// The player starts on the floor on the left side, away from the giant
+let playerX = 40;
+let playerY = floorY - 12;
+
+// How fast the player moves each frame
+const playerSpeed = 3;
+
 
 function setup() {
   createCanvas(canvasW, canvasH);
@@ -130,16 +138,14 @@ function draw() {
   arc(giantX - 190, giantY - 25, 22, 12, 0, PI);
 
 
-  // Snoring Mouth
-  // The mouth opens a little more when the breath is bigger :)
+  // Snoring Mouth- the mouth opens a little more when the breath is bigger :)
 
   noStroke();
   fill(80, 30, 30);
   ellipse(giantX - 205, giantY + 15, 16, 8 + breath);
 
 
-  // Zzz...
-  // These move up and down with the giant's breath
+  // Zzz... These move up and down with the giant's breath
 
   fill(230);
   textSize(18);
@@ -148,6 +154,61 @@ function draw() {
   text("Z", giantX - 150, giantY - 100 - breath);
   textSize(34);
   text("Z", giantX - 125, giantY - 130 - breath);
+
+
+  // Player Movement (WASD or Arrow Keys)
+
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+    playerX = playerX - playerSpeed;
+  }
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+    playerX = playerX + playerSpeed;
+  }
+  if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+    playerY = playerY - playerSpeed;
+  }
+  if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+    playerY = playerY + playerSpeed;
+  }
+
+
+  // Keep the Player on Screen
+
+  if (playerX < 8) {
+    playerX = 8;
+  }
+  if (playerX > canvasW - 8) {
+    playerX = canvasW - 8;
+  }
+  if (playerY < 16) {
+    playerY = 16;
+  }
+  // Stops player from sinking into the floor
+  if (playerY > floorY - 12) {
+    playerY = floorY - 12;
+  }
+
+
+  // DRAW THE PLAYER
+
+  noStroke();
+
+  // Cloak
+  fill(35, 30, 45);
+  triangle(playerX - 8, playerY + 12, playerX + 8, playerY + 12, playerX, playerY - 8);
+
+  // Face
+  fill(230, 200, 170);
+  ellipse(playerX, playerY - 8, 14, 14);
+
+  // Hood
+  fill(35, 30, 45);
+  arc(playerX, playerY - 9, 16, 16, PI, TWO_PI);
+
+  // Eyes
+  fill(20);
+  ellipse(playerX - 3, playerY - 6, 2, 2);
+  ellipse(playerX + 3, playerY - 6, 2, 2);
 
 
   // Title
