@@ -11,16 +11,18 @@ let playerX = 30;
 let playerY = 350;
 let playerSize = 20;
 let playerSpeed = 3;
-
+// Goal starts at this x position
+let goalX = 520;
 // eyeOpen = true + eyeClosed = false
 let eyeOpen = false;
 // eyeTimer counts frames (it goes up by 1 every time draw() runs)
 let eyeTimer = 0;
-
 // Moving is true when player is pressing a key
 let moving = false;
 // gameOver becomes true if the player moves while the eye is open
 let gameOver = false;
+// gameWon becomes true if the player reaches the goal
+let gameWon = false;
 
 function setup() {
   createCanvas(600, 400);
@@ -28,8 +30,8 @@ function setup() {
 
 function draw() {
   // EYE TIMER
-  // Timer counts until game is over
-  if (gameOver == false) {
+  // Timer counts until the game ends
+  if (gameOver == false && gameWon == false) {
     eyeTimer = eyeTimer + 1;
   }
   // Eye is closed for 3 seconds, then opens
@@ -41,125 +43,88 @@ function draw() {
     eyeOpen = false;
     eyeTimer = 0;
   }
-
   // BACKGROUND
-  // the background gets darker when the eye is open
+  // The background gets darker when the eye is open
   if (eyeOpen == true) {
     background(190);
   } else {
     background(240);
   }
-
   // DRAW GOAL
   stroke(0);
   fill(200);
-  rect(520, 0, 80, 400);
+  rect(goalX, 0, 80, 400);
   fill(0);
   textSize(20);
   text("GOAL", 535, 205);
-
   // DRAW EYE
-  stroke(0);
-  fill(20);
-  arc(300, 55, 300, 60, PI, TWO_PI);
-
-  // Eyelashes
-  line(220, 60, 200, 30);
-  line(300, 50, 300, 20);
-  line(380, 60, 400, 30);
-
   if (eyeOpen == true) {
     // OPEN EYE
     fill(255);
-    ellipse(300, 120, 260, 140);
-
-    // Veins
-    stroke(150);
-    line(180, 120, 240, 110);
-    line(420, 120, 360, 110);
-    line(200, 150, 250, 135);
-
-    // Iris + Pupil
-    stroke(0);
-    fill(100);
-    ellipse(300, 120, 90, 90);
+    ellipse(300, 125, 260, 130);
+    // Gray ring + black pupil
+    fill(130);
+    ellipse(325, 137, 120, 110);
     fill(0);
-    ellipse(300, 120, 40, 40);
-
-    // White Shine
-    stroke(255);
-    fill(255);
-    ellipse(288, 108, 12, 12);
-
+    ellipse(325, 130, 100, 100);
     // Warning
-    stroke(0);
-    fill(0);
     textSize(40);
     text("DON'T MOVE!", 170, 280);
   } else {
     // CLOSED EYE
-    stroke(0);
-    fill(60);
-    ellipse(300, 120, 260, 140);
-    fill(0);
-    arc(300, 110, 220, 60, 0, PI);
+    fill(150);
+    ellipse(300, 125, 260, 130);
   }
-
+  // Heavy black eyelid + pointed corner
+  fill(0);
+  ellipse(297, 95, 270, 80);
+  triangle(410, 95, 455, 138, 400, 130);
   // PLAYER MOVEMENT
   moving = false;
-
   // Player can only move if the game is not over
-  if (gameOver == false) {
+  if (gameOver == false && gameWon == false) {
     // Left (A)
     if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
       moving = true;
       // Only moves when the eye is closed
-      if (eyeOpen == false) {
-        playerX = playerX - playerSpeed;
-      }
+      if (eyeOpen == false) { playerX = playerX - playerSpeed; }
     }
     // Right (D)
     if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
       moving = true;
-      if (eyeOpen == false) {
-        playerX = playerX + playerSpeed;
-      }
+      if (eyeOpen == false) { playerX = playerX + playerSpeed; }
     }
     // Up (W)
     if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
       moving = true;
-      if (eyeOpen == false) {
-        playerY = playerY - playerSpeed;
-      }
+      if (eyeOpen == false) { playerY = playerY - playerSpeed; }
     }
     // Down (S)
     if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
       moving = true;
-      if (eyeOpen == false) {
-        playerY = playerY + playerSpeed;
-      }
+      if (eyeOpen == false) { playerY = playerY + playerSpeed; }
     }
   }
-
-  // GAME OVER CONDITION
+  // WIN AND LOSE
+  // Moving while the eye is open means game over
   if (moving == true && eyeOpen == true) {
     gameOver = true;
   }
-
+  // Reaching the goal means you win
+  if (playerX > goalX) {
+    gameWon = true;
+  }
+  // RESTART (press R)
+  if (keyIsDown(82)) {
+    playerX = 30; playerY = 350;
+    eyeOpen = false; eyeTimer = 0;
+    gameOver = false; gameWon = false;
+  }
   // KEEP PLAYER INSIDE CANVAS
-  if (playerX < 0) {
-    playerX = 0;
-  }
-  if (playerX > width - playerSize) {
-    playerX = width - playerSize;
-  }
-  if (playerY < 0) {
-    playerY = 0;
-  }
-  if (playerY > height - playerSize) {
-    playerY = height - playerSize;
-  }
-
+  if (playerX < 0) { playerX = 0; }
+  if (playerX > width - playerSize) { playerX = width - playerSize; }
+  if (playerY < 0) { playerY = 0; }
+  if (playerY > height - playerSize) { playerY = height - playerSize; }
   // DRAW PLAYER
   stroke(0);
   fill(20);
@@ -168,15 +133,21 @@ function draw() {
   fill(255);
   ellipse(playerX + 6, playerY + 8, 5, 5);
   ellipse(playerX + 14, playerY + 8, 5, 5);
-
-  // GAME OVER SCREEN
-  if (gameOver == true) {
-    stroke(0);
-    fill(0);
-    rect(150, 150, 300, 100);
+  // END SCREEN
+  if (gameOver == true || gameWon == true) {
     stroke(255);
+    fill(0);
+    rect(100, 200, 400, 140);
     fill(255);
     textSize(40);
-    text("GAME OVER", 200, 212);
+    if (gameOver == true) {
+      text("GAME OVER", 200, 250);
+      textSize(20);
+      text("THE EYE SAW YOU", 215, 285);
+    } else {
+      text("YOU ESCAPED!", 170, 260);
+    }
+    textSize(20);
+    text("PRESS R TO RESTART", 200, 320);
   }
 }
