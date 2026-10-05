@@ -34,6 +34,16 @@ let playerSpeed;
 // Which part of the giant the player is on right now
 let bodyArea = "Floor";
 
+// Giant's Heart
+// The heart sits in the giant's chest, between his head and his arm
+let heartX = giantX - 100;
+let heartY = giantY - 10;
+let heartSize = 20;
+
+// Heartbeat
+// How much bigger the heart gets when it beats
+let heartBeat = 0;
+
 
 function setup() {
   createCanvas(canvasW, canvasH);
@@ -98,6 +108,16 @@ function draw() {
   }
 
 
+  // Heartbeat
+  // Every 45 frames the heart beats - it gets bigger for 6 frames then goes back
+
+  if (frameCount % 45 < 6) {
+    heartBeat = 5;
+  } else {
+    heartBeat = 0;
+  }
+
+
   // Giant's Legs
 
   fill(70, 90, 60);
@@ -120,6 +140,22 @@ function draw() {
 
   fill(50, 35, 25);
   rect(giantX + 60, giantY - 45, 25, 110);
+
+
+  // Giant's Heart
+  // Made from 2 circles and a triangle - beatSize is the normal size plus the heartbeat
+
+  let beatSize = heartSize + heartBeat;
+
+  // Glow
+  fill(255, 80, 90, 60);
+  ellipse(heartX, heartY, beatSize * 2, beatSize * 2);
+
+  // Heart
+  fill(200, 30, 50);
+  ellipse(heartX - beatSize / 4, heartY - beatSize / 4, beatSize / 2, beatSize / 2);
+  ellipse(heartX + beatSize / 4, heartY - beatSize / 4, beatSize / 2, beatSize / 2);
+  triangle(heartX - beatSize / 2, heartY - beatSize / 4, heartX + beatSize / 2, heartY - beatSize / 4, heartX, heartY + beatSize / 2);
 
 
   // Giant's Resting Arm
