@@ -30,6 +30,10 @@ let playerY;
 // Player Speed
 let playerSpeed;
 
+// Body Area
+// Which part of the giant the player is on right now
+let bodyArea = "Floor";
+
 
 function setup() {
   createCanvas(canvasW, canvasH);
@@ -197,6 +201,25 @@ function draw() {
   }
 
 
+  // Body Areas
+  // Checks which part of the giant the player is on - the head is round so it uses dist()
+  // The arm and feet are checked before the body because they sit on top of it
+
+  if (dist(playerX, playerY, giantX - 200, giantY - 5) < 55) {
+    bodyArea = "Head";
+  } else if (playerX > giantX - 80 && playerX < giantX + 90 && playerY > giantY - 60 && playerY < giantY - 20) {
+    bodyArea = "Arm";
+  } else if (playerX > giantX + 298 && playerX < giantX + 342 && playerY > giantY - 20 && playerY < giantY + 55) {
+    bodyArea = "Feet";
+  } else if (playerX > giantX + 110 && playerX < giantX + 310 && playerY > giantY + 5 && playerY < giantY + 55) {
+    bodyArea = "Legs";
+  } else if (playerX > giantX - 130 && playerX < giantX + 130 && playerY > giantY - 50 && playerY < giantY + 55) {
+    bodyArea = "Body";
+  } else {
+    bodyArea = "Floor";
+  }
+
+
   // DRAW THE PLAYER
 
   noStroke();
@@ -224,5 +247,13 @@ function draw() {
   fill(240, 220, 160);
   textSize(28);
   text("Steal the Giant's Heart", 20, 40);
+
+
+  // Body Area Text
+  // Shows where the player is on the floor at the bottom
+
+  fill(240, 220, 160);
+  textSize(18);
+  text("Standing on: " + bodyArea, 20, 450);
 
 }
