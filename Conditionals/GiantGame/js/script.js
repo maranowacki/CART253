@@ -24,16 +24,23 @@ let breathSpeed = 0.15;
 let breathingIn = true; // true = belly getting bigger
 
 // Player Position
-// The player starts on the floor on the left side, away from the giant
-let playerX = 40;
-let playerY = floorY - 12;
+let playerX;
+let playerY;
 
-// How fast the player moves each frame
-const playerSpeed = 3;
+// Player Speed
+let playerSpeed;
 
 
 function setup() {
   createCanvas(canvasW, canvasH);
+
+  // Player Starting Position
+  // The player starts on the floor on the left side, away from the giant
+  playerX = 40;
+  playerY = floorY - 12;
+
+  // How fast the player moves each frame
+  playerSpeed = 3;
 }
 
 
@@ -157,17 +164,18 @@ function draw() {
 
 
   // Player Movement (WASD or Arrow Keys)
+  // A = 65, D = 68, W = 87, S = 83 - Going Up makes Y smaller, Going Down makes Y bigger
 
-  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+  if (keyIsDown(65) || keyIsDown(LEFT_ARROW)) {
     playerX = playerX - playerSpeed;
   }
-  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+  if (keyIsDown(68) || keyIsDown(RIGHT_ARROW)) {
     playerX = playerX + playerSpeed;
   }
-  if (keyIsDown(UP_ARROW) || keyIsDown(87)) {
+  if (keyIsDown(87) || keyIsDown(UP_ARROW)) {
     playerY = playerY - playerSpeed;
   }
-  if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) {
+  if (keyIsDown(83) || keyIsDown(DOWN_ARROW)) {
     playerY = playerY + playerSpeed;
   }
 
