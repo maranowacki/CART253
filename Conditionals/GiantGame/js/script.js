@@ -44,6 +44,15 @@ let heartSize = 20;
 // How much bigger the heart gets when it beats
 let heartBeat = 0;
 
+// Distance to Heart
+// How far the player is from the heart
+let heartDistance = 0;
+
+// Near the Heart
+// true = the player is close enough to reach the heart
+let nearHeart = false;
+let reachDistance = 30;
+
 
 function setup() {
   createCanvas(canvasW, canvasH);
@@ -256,6 +265,29 @@ function draw() {
   }
 
 
+  // Distance to Heart
+  // dist() measures from the middle of the player to the middle of the heart
+
+  heartDistance = dist(playerX, playerY, heartX, heartY);
+
+  if (heartDistance < reachDistance) {
+    nearHeart = true;
+  } else {
+    nearHeart = false;
+  }
+
+
+  // Heart Highlight
+  // A yellow ring shows up around the heart when the player is close enough
+
+  if (nearHeart) {
+    noFill();
+    stroke(255, 220, 100);
+    strokeWeight(2);
+    ellipse(heartX, heartY, 50, 50);
+  }
+
+
   // DRAW THE PLAYER
 
   noStroke();
@@ -291,5 +323,16 @@ function draw() {
   fill(240, 220, 160);
   textSize(18);
   text("Standing on: " + bodyArea, 20, 450);
+
+
+  // Distance Text
+  // round() gets rid of the decimals so it's easier to read
+
+  text("Distance to heart: " + round(heartDistance), 20, 475);
+
+  if (nearHeart) {
+    fill(255, 220, 100);
+    text("You can reach the heart!", 560, 450);
+  }
 
 }
