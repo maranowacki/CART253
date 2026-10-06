@@ -58,27 +58,38 @@ function draw() {
   textSize(20);
   text("GOAL", 535, 205);
   // DRAW EYE
+  // Pale lower lid
+  stroke(0);
+  fill(215);
+  ellipse(298, 160, 300, 135);
+  // Black lower lid line (the white eye goes on top of it)
+  fill(0);
+  ellipse(318, 156, 258, 112);
   if (eyeOpen == true) {
     // OPEN EYE
     fill(255);
-    ellipse(300, 125, 260, 130);
+    ellipse(318, 150, 258, 112);
     // Gray ring + black pupil
     fill(130);
-    ellipse(325, 137, 120, 110);
+    ellipse(318, 123, 160, 150);
     fill(0);
-    ellipse(325, 130, 100, 100);
+    ellipse(315, 112, 124, 124);
     // Warning
     textSize(40);
     text("DON'T MOVE!", 170, 280);
   } else {
     // CLOSED EYE
-    fill(150);
-    ellipse(300, 125, 260, 130);
+    fill(110);
+    ellipse(318, 150, 258, 112);
   }
-  // Heavy black eyelid + pointed corner
+  // Heavy black eyelid
   fill(0);
-  ellipse(297, 95, 270, 80);
-  triangle(410, 95, 455, 138, 400, 130);
+  ellipse(295, 62, 230, 90);
+  triangle(146, 122, 167, 72, 225, 100);
+  triangle(167, 72, 205, 45, 225, 100);
+  // Pointed right corner
+  triangle(381, 44, 453, 171, 428, 166);
+  triangle(381, 44, 428, 166, 400, 110);
   // PLAYER MOVEMENT
   moving = false;
   // Player can only move if the game is not over
