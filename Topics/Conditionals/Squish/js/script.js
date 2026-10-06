@@ -12,6 +12,7 @@ const P2 = [430, 120];
 const P3 = [615, 232];
 
 const SEGMENTS = 22;
+const BUG_SCALE = 0.5; // 0.5 = half as wide and tall, so about 1/4 the area
 
 function setup() {
   createCanvas(750, 450);
@@ -23,10 +24,17 @@ function draw() {
   fill(0);
   stroke(0);
 
+  push();
+  // Center the bug on the canvas, then shrink it
+  translate(width / 2, height / 2);
+  scale(BUG_SCALE);
+  translate(-364, -173); // center of the original bug's bounding box
+
   drawAntennae();
   drawLegs();
   drawBody();
   drawTailLegs();
+  pop();
 }
 
 function spine(t) {
@@ -105,7 +113,7 @@ function leg(s, offset, side, len) {
   const mx = bx + s.nx * side * len * 0.55 - s.tx * len * 0.12;
   const my = by + s.ny * side * len * 0.55 - s.ty * len * 0.12;
 
-  const w = 3.2; 
+  const w = 3.2;
   beginShape();
   vertex(bx - s.tx * w, by - s.ty * w);
   quadCurve(bx - s.tx * w, by - s.ty * w,
