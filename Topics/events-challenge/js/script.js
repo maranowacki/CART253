@@ -1,6 +1,6 @@
 /**
  * Events
- * Mara Nowacki
+ * Mara and Nico
  */
 
 "use strict";
@@ -25,7 +25,7 @@ function setup() {
 function draw() {
 
 
-  background("#eeff00");
+  background("#87ceeb");
 
   // Check if the game is NOT over
   if (!gameOver) {
