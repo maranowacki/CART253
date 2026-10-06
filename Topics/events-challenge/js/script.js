@@ -25,7 +25,7 @@ function setup() {
 function draw() {
 
 
-  background("#87ceeb");
+  background("#eeff00");
 
   // Check if the game is NOT over
   if (!gameOver) {
