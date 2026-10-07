@@ -1,14 +1,14 @@
 /**
- * Pop The Balloons
+ * Press the Button
  * Mara Nowacki
  */
 
 "use strict";
 
-let balloonX = 200;
-let balloonY = 200;
-let balloonSize = 100;
-let popped = false;
+let buttonX = 200;
+let buttonY = 200;
+let buttonSize = 80;
+let pushed = false;
 
 function setup() {
   createCanvas(400, 400);
@@ -17,27 +17,25 @@ function setup() {
 function draw() {
   background(240);
 
-  // Draw the balloon if it has not been popped
-  if (popped == false) {
-    fill(0);
-    ellipse(balloonX, balloonY, balloonSize, balloonSize);
-
-    // Draw the balloon string
-    line(balloonX, balloonY + balloonSize / 2, balloonX, 350);
+  // Check if the button is clicked
+  if (mouseIsPressed && dist(mouseX, mouseY, buttonX, buttonY) < buttonSize / 2) {
+    pushed = true;
   }
 
-  // Show a message after the balloon pops
-  if (popped == true) {
+  // Draw the button
+  if (pushed == false) {
+    fill(100);
+    ellipse(buttonX, buttonY, buttonSize, buttonSize);
+  }
+
+  // Change the button after it is pushed
+  if (pushed == true) {
+    fill(20);
+    ellipse(buttonX, buttonY, buttonSize - 20, buttonSize - 20);
+
     fill(0);
     textSize(24);
     textAlign(CENTER);
-    text("POP!", 200, 200);
-  }
-}
-
-function mousePressed() {
-  // Check if the mouse is touching the balloon
-  if (dist(mouseX, mouseY, balloonX, balloonY) < balloonSize / 2) {
-    popped = true;
+    text("PUSHED!", 200, 300);
   }
 }
