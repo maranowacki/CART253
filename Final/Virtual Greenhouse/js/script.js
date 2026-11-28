@@ -20,7 +20,8 @@ const COLORS = {
   golden: [200, 153, 53],
   goldenDark: [150, 104, 40],
   softWhite: [253, 251, 244],
-  dimmer: [78, 88, 34, 140] // see-through olive that darkens the greenhouse behind menus
+  dimmer: [78, 88, 34, 140], // see-through olive that darkens the greenhouse behind menus
+  highlight: [250, 238, 211, 170] // see-through cream that fills an empty spot under the mouse
 };
 
 // Font and text sizes
@@ -39,7 +40,7 @@ let images = {
   plants: {}
 };
 
-// Every kind of plant in the game
+// Every kind of plant in the game; "key" is also the image file name in assets/plants/mature/
 const plantDatabase = [
   { key: "monstera", name: "Monstera", type: "Tropical", wateringNeed: "Medium", cost: 40,
     description: "A tropical plant with big split leaves. Likes bright, indirect light and drying out a little between waterings." },
@@ -139,11 +140,18 @@ const CARD_GAP = 12;
 // Area on the right of the Collection screen that shows the selected plant
 const detailsArea = { x: 530, y: 196, width: 302 };
 
-// Button that removes the selected plant from the collection
-let removeButton = { label: "Remove", x: 611, y: 552, width: 140, height: 40 };
+// Button that takes the selected plant to the greenhouse to place or move it; its label is set in drawPlantDetails()
+let placeButton = { label: "Place", x: 530, y: 552, width: 140, height: 40 };
 
-// True when the mouse is over the Remove button
+// Button that removes the selected plant from the collection
+let removeButton = { label: "Remove", x: 692, y: 552, width: 140, height: 40 };
+
+// True when the mouse is over the Place or Remove button
+let isPlaceHovered = false;
 let isRemoveHovered = false;
+
+// Index of the greenhouse spot under the mouse, or -1 for none
+let hoveredSpotIndex = -1;
 
 
 // Asset Loading
@@ -243,9 +251,9 @@ function drawCurrentScreen() {
 }
 
 
-// ===== 5. GREENHOUSE RENDERING =====
+// Greenhouse Rendering
 
-// Draws the greenhouse background (or a missing-image box) and the plant spots
+// Draws the greenhouse background (or a missing-image box), the empty spots and the placed plants
 function drawGreenhouse() {
   if (images.background) {
     drawImageFitted(images.background, scene.x, scene.y, scene.width, scene.height);
@@ -254,17 +262,108 @@ function drawGreenhouse() {
   }
 
   drawPlacementSpots();
-}
+  drawPlacedPlants();
 
-// Draws an outline for every placement spot
-function drawPlacementSpots() {
-  for (let i = 0; i < placementSpots.length; i++) {
-    drawSpotOutline(placementSpots[i]);
+  if (currentScreen === "greenhouse" && selectedPlantIndex !== -1) {
+    drawSelectedPlantLabel();
+    drawPlacementHint();
   }
 }
 
-// Draws a dashed pot outline (a rim and a narrower body) at one spot
-function drawSpotOutline(spot) {
+// Draws an outline on every empty spot; the lines get thicker while a plant is selected so you can see where it can go
+function drawPlacementSpots() {
+  let isPlacing = currentScreen === "greenhouse" && selectedPlantIndex !== -1;
+
+  for (let i = 0; i < placementSpots.length; i++) {
+    let spot = placementSpots[i];
+
+    if (getPlantAtSpot(spot.id) === -1) {
+      let isHovered = isPlacing && i === hoveredSpotIndex;
+      drawSpotOutline(spot, isPlacing, isHovered);
+    }
+  }
+}
+
+// Draws every placed plant on its spot, with a light patch under it when selected (yellow rim) or hovered (green rim)
+function drawPlacedPlants() {
+  for (let i = 0; i < placementSpots.length; i++) {
+    let spot = placementSpots[i];
+    let plantIndex = getPlantAtSpot(spot.id);
+
+    if (plantIndex !== -1) {
+      let size = PLANT_SIZES[spot.area];
+
+      fill(COLORS.softWhite);
+      strokeWeight(OUTLINE_WEIGHT);
+      if (plantIndex === selectedPlantIndex) {
+        stroke(COLORS.mustard);
+        ellipse(spot.x, spot.y - 4, size.width * 0.9, 24);
+      } else if (currentScreen === "greenhouse" && i === hoveredSpotIndex) {
+        stroke(COLORS.grass);
+        ellipse(spot.x, spot.y - 4, size.width * 0.9, 24);
+      }
+
+      drawPlant(ownedPlants[plantIndex], spot.x, spot.y, size.width, size.height);
+    }
+  }
+}
+
+// Draws a small label with the name and health above the selected plant, if it's placed
+function drawSelectedPlantLabel() {
+  let plant = ownedPlants[selectedPlantIndex];
+  let spot = getSpotById(plant.spotId);
+
+  if (spot === null) {
+    return;
+  }
+
+  let data = getPlantData(plant.plantKey);
+  let size = PLANT_SIZES[spot.area];
+  let labelWidth = 130;
+  let labelHeight = 46;
+  let labelX = spot.x - labelWidth / 2;
+  let labelY = spot.y - size.height - labelHeight - 6;
+
+  stroke(COLORS.cream);
+  strokeWeight(OUTLINE_WEIGHT);
+  fill(COLORS.softWhite);
+  rect(labelX, labelY, labelWidth, labelHeight, 12);
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  textSize(TEXT_SIZE_SMALL);
+  text(data.name, spot.x, labelY + 15);
+  fill(COLORS.olive);
+  text("Health: " + plant.health + "%", spot.x, labelY + 32);
+}
+
+// Draws the instruction at the top of the greenhouse while a plant is selected
+function drawPlacementHint() {
+  let data = getPlantData(ownedPlants[selectedPlantIndex].plantKey);
+  let message = "Click an empty spot to move the " + data.name + ". Press escape to cancel.";
+
+  if (ownedPlants[selectedPlantIndex].spotId === null) {
+    message = "Click an empty spot to place the " + data.name + ". Press escape to cancel.";
+  }
+
+  textSize(TEXT_SIZE_SMALL);
+  let hintWidth = textWidth(message) + 40;
+  let hintX = scene.x + (scene.width - hintWidth) / 2;
+
+  stroke(COLORS.cream);
+  strokeWeight(OUTLINE_WEIGHT);
+  fill(COLORS.softWhite);
+  rect(hintX, 16, hintWidth, 40, 20);
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  text(message, scene.x + scene.width / 2, 36);
+}
+
+// Draws a dashed pot outline (a rim and a narrower body) at one spot; thicker while placing, filled in when hovered
+function drawSpotOutline(spot, isHighlighted, isHovered) {
   let left = spot.x - SPOT_WIDTH / 2;
   let top = spot.y - SPOT_HEIGHT;
   let rimHeight = SPOT_HEIGHT * 0.3;
@@ -273,9 +372,18 @@ function drawSpotOutline(spot) {
   // Turns on dashed lines: 9 pixels drawn, 7 pixels skipped
   drawingContext.setLineDash([9, 7]);
 
-  noFill();
+  if (isHovered) {
+    fill(COLORS.highlight);
+  } else {
+    noFill();
+  }
+
   stroke(COLORS.softWhite);
-  strokeWeight(3);
+  if (isHighlighted) {
+    strokeWeight(5);
+  } else {
+    strokeWeight(3);
+  }
 
   // Pot rim
   rect(left, top, SPOT_WIDTH, rimHeight, 10);
@@ -383,6 +491,38 @@ function addPlantToCollection(plantKey) {
 function removePlantFromCollection(index) {
   ownedPlants.splice(index, 1);
   selectedPlantIndex = -1;
+}
+
+// Returns the index in ownedPlants of the plant standing on a spot, or -1 if the spot is empty
+function getPlantAtSpot(spotId) {
+  for (let i = 0; i < ownedPlants.length; i++) {
+    if (ownedPlants[i].spotId === spotId) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+// Returns the spot with a given id, or null if there isn't one (for example when a plant isn't placed)
+function getSpotById(spotId) {
+  for (let i = 0; i < placementSpots.length; i++) {
+    if (placementSpots[i].id === spotId) {
+      return placementSpots[i];
+    }
+  }
+
+  return null;
+}
+
+// Puts a plant on a spot; returns false if another plant is already there
+function placePlant(plantIndex, spotId) {
+  if (getPlantAtSpot(spotId) !== -1) {
+    return false;
+  }
+
+  ownedPlants[plantIndex].spotId = spotId;
+  return true;
 }
 
 // Returns the top-left corner of the card in a given slot of the collection grid
@@ -533,7 +673,7 @@ function drawEmptyCard(index) {
   drawingContext.setLineDash([]);
 }
 
-// Draws the selected plant's picture, information and Remove button, or a hint if nothing is selected
+// Draws the selected plant's picture, information and buttons, or a hint if nothing is selected
 function drawPlantDetails() {
   let centerX = detailsArea.x + detailsArea.width / 2;
 
@@ -583,6 +723,14 @@ function drawPlantDetails() {
   text("Health: " + plant.health + "%", detailsArea.x, detailsArea.y + 306);
   text("Location: " + location, detailsArea.x, detailsArea.y + 326);
 
+  // The first button says "Place" for a plant in storage and "Move" for one already in the greenhouse
+  if (plant.spotId === null) {
+    placeButton.label = "Place";
+  } else {
+    placeButton.label = "Move";
+  }
+
+  drawButton(placeButton, false, isPlaceHovered);
   drawButton(removeButton, false, isRemoveHovered);
 }
 
@@ -612,7 +760,32 @@ function isMouseInside(x, y, w, h) {
   return gameMouseX >= x && gameMouseX <= x + w && gameMouseY >= y && gameMouseY <= y + h;
 }
 
-// Handles clicks on the sidebar buttons, then on the Collection screen if it's open
+// Returns the area a plant takes up on a spot, used to check whether the mouse is over that spot
+function getSpotBox(spot) {
+  let size = PLANT_SIZES[spot.area];
+
+  return {
+    x: spot.x - size.width / 2,
+    y: spot.y - size.height,
+    width: size.width,
+    height: size.height
+  };
+}
+
+// Returns the index of the greenhouse spot under the mouse, or -1 if the mouse isn't over one
+function getSpotIndexUnderMouse() {
+  for (let i = 0; i < placementSpots.length; i++) {
+    let box = getSpotBox(placementSpots[i]);
+
+    if (isMouseInside(box.x, box.y, box.width, box.height)) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+// Handles clicks on the sidebar buttons, then on whichever screen is open
 function mousePressed() {
   for (let i = 0; i < navButtons.length; i++) {
     let button = navButtons[i];
@@ -625,10 +798,12 @@ function mousePressed() {
 
   if (currentScreen === "collection") {
     handleCollectionClick();
+  } else if (currentScreen === "greenhouse") {
+    handleGreenhouseClick();
   }
 }
 
-// Selects a clicked plant card, or removes the selected plant when Remove is clicked
+// Selects a clicked plant card, sends the selected plant to the greenhouse with Place/Move, or removes it with Remove
 function handleCollectionClick() {
   for (let i = 0; i < ownedPlants.length; i++) {
     let position = getCardPosition(i);
@@ -639,15 +814,50 @@ function handleCollectionClick() {
     }
   }
 
-  if (selectedPlantIndex !== -1 && isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height)) {
+  if (selectedPlantIndex === -1) {
+    return;
+  }
+
+  if (isMouseInside(placeButton.x, placeButton.y, placeButton.width, placeButton.height)) {
+    currentScreen = "greenhouse";
+  } else if (isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height)) {
     removePlantFromCollection(selectedPlantIndex);
   }
 }
 
-// Records which button or plant card the mouse is over when the mouse moves
+// Selects a clicked plant, puts the selected plant on a clicked empty spot, or clears the selection
+function handleGreenhouseClick() {
+  let spotIndex = getSpotIndexUnderMouse();
+
+  // Clicking anywhere that isn't a spot clears the selection
+  if (spotIndex === -1) {
+    selectedPlantIndex = -1;
+    return;
+  }
+
+  let spot = placementSpots[spotIndex];
+  let plantIndex = getPlantAtSpot(spot.id);
+
+  if (plantIndex !== -1) {
+    // Clicking a plant selects it, or clears the selection if it was already selected
+    if (plantIndex === selectedPlantIndex) {
+      selectedPlantIndex = -1;
+    } else {
+      selectedPlantIndex = plantIndex;
+    }
+  } else if (selectedPlantIndex !== -1) {
+    // Clicking an empty spot while a plant is selected puts the plant there
+    placePlant(selectedPlantIndex, spot.id);
+    selectedPlantIndex = -1;
+  }
+}
+
+// Records which button, plant card or spot the mouse is over when the mouse moves
 function mouseMoved() {
   hoveredNavButton = -1;
   hoveredCardIndex = -1;
+  hoveredSpotIndex = -1;
+  isPlaceHovered = false;
   isRemoveHovered = false;
 
   for (let i = 0; i < navButtons.length; i++) {
@@ -668,13 +878,21 @@ function mouseMoved() {
     }
 
     if (selectedPlantIndex !== -1) {
+      isPlaceHovered = isMouseInside(placeButton.x, placeButton.y, placeButton.width, placeButton.height);
       isRemoveHovered = isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height);
     }
+  } else if (currentScreen === "greenhouse") {
+    hoveredSpotIndex = getSpotIndexUnderMouse();
   }
 }
 
-// On the Collection screen, the left and right arrow keys move the selection between plants
+// Escape clears the selection; on the Collection screen, the left and right arrow keys move the selection between plants
 function keyPressed() {
+  if (key === "Escape") {
+    selectedPlantIndex = -1;
+    return;
+  }
+
   if (currentScreen !== "collection" || ownedPlants.length === 0) {
     return;
   }
