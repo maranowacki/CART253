@@ -37,7 +37,8 @@ const OUTLINE_WEIGHT = 4;
 // Loaded images; an image stays null if its file is missing
 let images = {
   background: null,
-  plants: {}
+  plants: {},
+  tools: {}
 };
 
 // Every kind of plant in the game; "key" is also the image file name in assets/plants/mature/
@@ -58,6 +59,14 @@ const plantDatabase = [
     description: "Soft, feathery fronds that love humidity. Keep the soil slightly damp and out of harsh sun." },
   { key: "succulent", name: "Succulent", type: "Succulent", wateringNeed: "Low", cost: 15,
     description: "A small plant with thick, fleshy leaves that hold water. Water it only when the soil is dry." }
+];
+
+// The gardening tools; "key" is also the image file name in assets/tools/
+let gardeningTools = [
+  { key: "watering_can", name: "Watering Can", description: "Fills a plant's water level back up to 100%." },
+  { key: "spray_bottle", name: "Spray Bottle", description: "Mists a plant for a small health boost. Plants that need lots of water get a bigger boost." },
+  { key: "shovel", name: "Shovel", description: "Digs a plant up and puts it back in your collection." },
+  { key: "fertilizer", name: "Fertilizer", description: "Helps a young plant grow faster. Fully grown plants don't need it." }
 ];
 
 // Largest size a plant can be drawn in each area; floor plants are bigger because the floor is closer to the viewer
@@ -153,6 +162,37 @@ let isRemoveHovered = false;
 // Index of the greenhouse spot under the mouse, or -1 for none
 let hoveredSpotIndex = -1;
 
+// Health and water level of a newly added plant (a little thirsty when it arrives)
+const NEW_PLANT_HEALTH = 80;
+const NEW_PLANT_WATER = 50;
+
+// Health the spray bottle adds, and the bigger amount for plants that need lots of water
+const MIST_HEALTH_BOOST = 5;
+const MIST_HEALTH_BOOST_HIGH = 10;
+
+// Key of the tool in use, or "" for none
+let selectedTool = "";
+
+// Index of the tool button under the mouse, or -1 for none
+let hoveredToolIndex = -1;
+
+// Size and layout of the tool buttons in the sidebar; positions are set in setupToolButtons()
+const TOOL_BUTTON_WIDTH = 108;
+const TOOL_BUTTON_HEIGHT = 112;
+const TOOL_BUTTON_GAP = 12;
+const TOOL_COLUMNS = 2;
+const TOOLS_TITLE_Y = 448;
+const TOOL_FIRST_BUTTON_Y = 472;
+
+// Size of the tool picture that follows the mouse while a tool is in use
+const TOOL_CURSOR_SIZE = 50;
+
+// Short message shown over a plant after using a tool; startTime is -1 when nothing is showing
+let feedback = { message: "", x: 0, y: 0, startTime: -1 };
+
+// How long a feedback message stays on screen, in milliseconds
+const FEEDBACK_DURATION = 1200;
+
 
 // Asset Loading
 
@@ -166,13 +206,18 @@ async function loadImageOrNull(path) {
   }
 }
 
-// Loads the background and the image for every plant in the database
+// Loads the background, the image for every plant in the database and the image for every tool
 async function loadAssets() {
   images.background = await loadImageOrNull("assets/backgrounds/greenhouse.png");
 
   for (let i = 0; i < plantDatabase.length; i++) {
     let key = plantDatabase[i].key;
     images.plants[key] = await loadImageOrNull("assets/plants/mature/" + key + ".png");
+  }
+
+  for (let i = 0; i < gardeningTools.length; i++) {
+    let key = gardeningTools[i].key;
+    images.tools[key] = await loadImageOrNull("assets/tools/" + key + ".png");
   }
 }
 
@@ -188,6 +233,7 @@ async function setup() {
 
   updateGameScale();
   setupNavButtons();
+  setupToolButtons();
   giveStarterPlants();
 }
 
@@ -211,6 +257,20 @@ function setupNavButtons() {
     navButtons[i].height = NAV_BUTTON_HEIGHT;
     navButtons[i].x = sidebar.x + (sidebar.width - NAV_BUTTON_WIDTH) / 2;
     navButtons[i].y = NAV_FIRST_BUTTON_Y + i * (NAV_BUTTON_HEIGHT + NAV_BUTTON_GAP);
+  }
+}
+
+// Places the tool buttons in a grid in the sidebar, under the menu buttons
+function setupToolButtons() {
+  let gridWidth = TOOL_COLUMNS * TOOL_BUTTON_WIDTH + (TOOL_COLUMNS - 1) * TOOL_BUTTON_GAP;
+  let startX = sidebar.x + (sidebar.width - gridWidth) / 2;
+
+  for (let i = 0; i < gardeningTools.length; i++) {
+    let column = i % TOOL_COLUMNS;
+    let row = floor(i / TOOL_COLUMNS);
+
+    gardeningTools[i].x = startX + column * (TOOL_BUTTON_WIDTH + TOOL_BUTTON_GAP);
+    gardeningTools[i].y = TOOL_FIRST_BUTTON_Y + row * (TOOL_BUTTON_HEIGHT + TOOL_BUTTON_GAP);
   }
 }
 
@@ -264,10 +324,30 @@ function drawGreenhouse() {
   drawPlacementSpots();
   drawPlacedPlants();
 
-  if (currentScreen === "greenhouse" && selectedPlantIndex !== -1) {
-    drawSelectedPlantLabel();
-    drawPlacementHint();
+  if (currentScreen !== "greenhouse") {
+    return;
   }
+
+  if (selectedPlantIndex !== -1) {
+    // Moving or placing a plant: label the plant and explain what to do
+    drawPlantLabel(selectedPlantIndex);
+    drawPlacementHint();
+  } else if (selectedTool !== "") {
+    // Using a tool: label the plant under the mouse so you can see its health and water
+    if (hoveredSpotIndex !== -1) {
+      let hoveredPlant = getPlantAtSpot(placementSpots[hoveredSpotIndex].id);
+      if (hoveredPlant !== -1) {
+        drawPlantLabel(hoveredPlant);
+      }
+    }
+    drawToolHint();
+  }
+
+  if (selectedTool !== "") {
+    drawToolCursor();
+  }
+
+  drawFeedback();
 }
 
 // Draws an outline on every empty spot; the lines get thicker while a plant is selected so you can see where it can go
@@ -308,9 +388,9 @@ function drawPlacedPlants() {
   }
 }
 
-// Draws a small label with the name and health above the selected plant, if it's placed
-function drawSelectedPlantLabel() {
-  let plant = ownedPlants[selectedPlantIndex];
+// Draws a small label with the name, health and water level above a plant, if it's placed
+function drawPlantLabel(plantIndex) {
+  let plant = ownedPlants[plantIndex];
   let spot = getSpotById(plant.spotId);
 
   if (spot === null) {
@@ -319,7 +399,7 @@ function drawSelectedPlantLabel() {
 
   let data = getPlantData(plant.plantKey);
   let size = PLANT_SIZES[spot.area];
-  let labelWidth = 130;
+  let labelWidth = 180;
   let labelHeight = 46;
   let labelX = spot.x - labelWidth / 2;
   let labelY = spot.y - size.height - labelHeight - 6;
@@ -335,7 +415,7 @@ function drawSelectedPlantLabel() {
   textSize(TEXT_SIZE_SMALL);
   text(data.name, spot.x, labelY + 15);
   fill(COLORS.olive);
-  text("Health: " + plant.health + "%", spot.x, labelY + 32);
+  text("Health " + plant.health + "%  |  Water " + plant.waterLevel + "%", spot.x, labelY + 32);
 }
 
 // Draws the instruction at the top of the greenhouse while a plant is selected
@@ -347,6 +427,17 @@ function drawPlacementHint() {
     message = "Click an empty spot to place the " + data.name + ". Press escape to cancel.";
   }
 
+  drawHint(message);
+}
+
+// Draws the instruction at the top of the greenhouse while a tool is in use
+function drawToolHint() {
+  let tool = getToolData(selectedTool);
+  drawHint(tool.name + ": click a plant to use it. Click the tool again or press escape to put it away.");
+}
+
+// Draws a message in a rounded box at the top of the greenhouse
+function drawHint(message) {
   textSize(TEXT_SIZE_SMALL);
   let hintWidth = textWidth(message) + 40;
   let hintX = scene.x + (scene.width - hintWidth) / 2;
@@ -360,6 +451,45 @@ function drawPlacementHint() {
   fill(COLORS.oliveDark);
   textAlign(CENTER, CENTER);
   text(message, scene.x + scene.width / 2, 36);
+}
+
+// Draws the feedback message, rising a little, until FEEDBACK_DURATION has passed
+function drawFeedback() {
+  if (feedback.startTime === -1) {
+    return;
+  }
+
+  let elapsed = millis() - feedback.startTime;
+  if (elapsed > FEEDBACK_DURATION) {
+    feedback.startTime = -1;
+    return;
+  }
+
+  let y = feedback.y - 20 * (elapsed / FEEDBACK_DURATION);
+
+  textSize(TEXT_SIZE_BODY);
+  let boxWidth = textWidth(feedback.message) + 32;
+
+  stroke(COLORS.mustard);
+  strokeWeight(OUTLINE_WEIGHT);
+  fill(COLORS.softWhite);
+  rect(feedback.x - boxWidth / 2, y - 18, boxWidth, 36, 18);
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  text(feedback.message, feedback.x, y);
+}
+
+// Draws the picture of the tool in use next to the mouse, while the mouse is over the greenhouse
+function drawToolCursor() {
+  let gameMouseX = getGameMouseX();
+  let gameMouseY = getGameMouseY();
+  let img = images.tools[selectedTool];
+
+  if (img && gameMouseX < scene.x + scene.width) {
+    drawImageFitted(img, gameMouseX + 8, gameMouseY - TOOL_CURSOR_SIZE, TOOL_CURSOR_SIZE, TOOL_CURSOR_SIZE);
+  }
 }
 
 // Draws a dashed pot outline (a rim and a narrower body) at one spot; thicker while placing, filled in when hovered
@@ -478,7 +608,9 @@ function addPlantToCollection(plantKey) {
     id: nextPlantId,
     plantKey: plantKey,
     growthStage: "Mature",
-    health: 100,
+    health: NEW_PLANT_HEALTH,
+    waterLevel: NEW_PLANT_WATER,
+    isFertilized: false,
     spotId: null,
     pot: "Original"
   });
@@ -537,6 +669,106 @@ function getCardPosition(index) {
 }
 
 
+// Plant Care
+
+// Returns the details of a tool from its key, or null if there isn't one
+function getToolData(toolKey) {
+  for (let i = 0; i < gardeningTools.length; i++) {
+    if (gardeningTools[i].key === toolKey) {
+      return gardeningTools[i];
+    }
+  }
+
+  return null;
+}
+
+// Picks up a tool, or puts it away if it's already in use; switches to the greenhouse so it can be used
+function selectTool(toolKey) {
+  if (selectedTool === toolKey) {
+    selectedTool = "";
+  } else {
+    selectedTool = toolKey;
+    selectedPlantIndex = -1;
+    currentScreen = "greenhouse";
+  }
+}
+
+// Uses the selected tool on a placed plant and shows what happened above it
+function useTool(toolKey, plantIndex) {
+  let plant = ownedPlants[plantIndex];
+  let spot = getSpotById(plant.spotId);
+  let size = PLANT_SIZES[spot.area];
+  let message = "";
+
+  if (toolKey === "watering_can") {
+    message = waterPlant(plant);
+  } else if (toolKey === "spray_bottle") {
+    message = mistPlant(plant);
+  } else if (toolKey === "shovel") {
+    message = digUpPlant(plant);
+  } else if (toolKey === "fertilizer") {
+    message = fertilizePlant(plant);
+  }
+
+  showFeedback(message, spot.x, spot.y - size.height / 2);
+}
+
+// Fills the plant's water level to 100%, unless it's already full
+function waterPlant(plant) {
+  if (plant.waterLevel >= 100) {
+    return "Already watered";
+  }
+
+  plant.waterLevel = 100;
+  return "Watered!";
+}
+
+// Adds health to the plant, more for plants that need lots of water, up to 100%
+function mistPlant(plant) {
+  if (plant.health >= 100) {
+    return "Already healthy";
+  }
+
+  let data = getPlantData(plant.plantKey);
+  let boost = MIST_HEALTH_BOOST;
+  if (data.wateringNeed === "High") {
+    boost = MIST_HEALTH_BOOST_HIGH;
+  }
+
+  let oldHealth = plant.health;
+  plant.health = min(100, plant.health + boost);
+  return "Health +" + (plant.health - oldHealth) + "%";
+}
+
+// Takes the plant out of the greenhouse; it stays in the collection
+function digUpPlant(plant) {
+  plant.spotId = null;
+  return "Back in your collection";
+}
+
+// Marks a young plant as fertilized so it grows faster; fully grown plants don't need it
+function fertilizePlant(plant) {
+  if (plant.growthStage === "Mature") {
+    return "Already fully grown";
+  }
+
+  if (plant.isFertilized) {
+    return "Already fertilized";
+  }
+
+  plant.isFertilized = true;
+  return "Fertilized!";
+}
+
+// Starts showing a feedback message centered at (x, y)
+function showFeedback(message, x, y) {
+  feedback.message = message;
+  feedback.x = x;
+  feedback.y = y;
+  feedback.startTime = millis();
+}
+
+
 // Interface Stuff
 
 // Draws the sidebar background, the title and the buttons
@@ -560,6 +792,44 @@ function drawSidebar() {
     let isHovered = i === hoveredNavButton;
     drawButton(navButtons[i], isActive, isHovered);
   }
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textSize(TEXT_SIZE_BUTTON);
+  textAlign(CENTER, CENTER);
+  text("Tools", sidebar.x + sidebar.width / 2, TOOLS_TITLE_Y);
+
+  for (let i = 0; i < gardeningTools.length; i++) {
+    drawToolButton(i);
+  }
+}
+
+// Draws one tool button with its picture and name, outlined in yellow if in use or green if hovered
+function drawToolButton(index) {
+  let tool = gardeningTools[index];
+
+  if (tool.key === selectedTool) {
+    stroke(COLORS.mustard);
+  } else if (index === hoveredToolIndex) {
+    stroke(COLORS.grass);
+  } else {
+    stroke(COLORS.cream);
+  }
+
+  strokeWeight(OUTLINE_WEIGHT);
+  fill(COLORS.cream);
+  rect(tool.x, tool.y, TOOL_BUTTON_WIDTH, TOOL_BUTTON_HEIGHT, 14);
+
+  let img = images.tools[tool.key];
+  if (img) {
+    drawImageFitted(img, tool.x + 14, tool.y + 10, TOOL_BUTTON_WIDTH - 28, 70);
+  }
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  textSize(TEXT_SIZE_SMALL);
+  text(tool.name, tool.x + TOOL_BUTTON_WIDTH / 2, tool.y + 96);
 }
 
 // Draws one button: yellow if active, bright green if hovered, soft green otherwise
@@ -718,7 +988,7 @@ function drawPlantDetails() {
 
   fill(COLORS.oliveDark);
   textAlign(LEFT, TOP);
-  text("Water needs: " + data.wateringNeed, detailsArea.x, detailsArea.y + 266);
+  text("Water: " + plant.waterLevel + "% (needs " + data.wateringNeed + ")", detailsArea.x, detailsArea.y + 266);
   text("Growth: " + plant.growthStage, detailsArea.x, detailsArea.y + 286);
   text("Health: " + plant.health + "%", detailsArea.x, detailsArea.y + 306);
   text("Location: " + location, detailsArea.x, detailsArea.y + 326);
@@ -734,9 +1004,33 @@ function drawPlantDetails() {
   drawButton(removeButton, false, isRemoveHovered);
 }
 
-// Shows the Inventory panel
+// Shows the Inventory panel: each tool's picture, name and what it does
 function drawInventory() {
-  drawMenuPanel("Inventory", "Tools and items are currently in progress..");
+  drawMenuPanel("Inventory", "");
+
+  for (let i = 0; i < gardeningTools.length; i++) {
+    let tool = gardeningTools[i];
+    let rowY = menuPanel.y + 100 + i * 95;
+    let img = images.tools[tool.key];
+
+    if (img) {
+      drawImageFitted(img, menuPanel.x + 50, rowY, 70, 70);
+    }
+
+    noStroke();
+    fill(COLORS.oliveDark);
+    textAlign(LEFT, CENTER);
+    textSize(TEXT_SIZE_BUTTON);
+    text(tool.name, menuPanel.x + 145, rowY + 18);
+
+    fill(COLORS.olive);
+    textSize(TEXT_SIZE_SMALL);
+    text(tool.description, menuPanel.x + 145, rowY + 48);
+  }
+
+  fill(COLORS.olive);
+  textAlign(CENTER, CENTER);
+  text("Click a tool in the sidebar to use it in the greenhouse.", menuPanel.x + menuPanel.width / 2, menuPanel.y + menuPanel.height - 28);
 }
 
 
@@ -796,6 +1090,15 @@ function mousePressed() {
     }
   }
 
+  for (let i = 0; i < gardeningTools.length; i++) {
+    let tool = gardeningTools[i];
+
+    if (isMouseInside(tool.x, tool.y, TOOL_BUTTON_WIDTH, TOOL_BUTTON_HEIGHT)) {
+      selectTool(tool.key);
+      return;
+    }
+  }
+
   if (currentScreen === "collection") {
     handleCollectionClick();
   } else if (currentScreen === "greenhouse") {
@@ -819,15 +1122,27 @@ function handleCollectionClick() {
   }
 
   if (isMouseInside(placeButton.x, placeButton.y, placeButton.width, placeButton.height)) {
+    selectedTool = "";
     currentScreen = "greenhouse";
   } else if (isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height)) {
     removePlantFromCollection(selectedPlantIndex);
   }
 }
 
-// Selects a clicked plant, puts the selected plant on a clicked empty spot, or clears the selection
+// Uses the tool on a clicked plant; otherwise selects a clicked plant, puts the selected plant on a clicked empty spot, or clears the selection
 function handleGreenhouseClick() {
   let spotIndex = getSpotIndexUnderMouse();
+
+  // While a tool is in use, clicks only use the tool on plants
+  if (selectedTool !== "") {
+    if (spotIndex !== -1) {
+      let toolTarget = getPlantAtSpot(placementSpots[spotIndex].id);
+      if (toolTarget !== -1) {
+        useTool(selectedTool, toolTarget);
+      }
+    }
+    return;
+  }
 
   // Clicking anywhere that isn't a spot clears the selection
   if (spotIndex === -1) {
@@ -852,9 +1167,10 @@ function handleGreenhouseClick() {
   }
 }
 
-// Records which button, plant card or spot the mouse is over when the mouse moves
+// Records which button, tool, plant card or spot the mouse is over when the mouse moves
 function mouseMoved() {
   hoveredNavButton = -1;
+  hoveredToolIndex = -1;
   hoveredCardIndex = -1;
   hoveredSpotIndex = -1;
   isPlaceHovered = false;
@@ -865,6 +1181,14 @@ function mouseMoved() {
 
     if (isMouseInside(button.x, button.y, button.width, button.height)) {
       hoveredNavButton = i;
+    }
+  }
+
+  for (let i = 0; i < gardeningTools.length; i++) {
+    let tool = gardeningTools[i];
+
+    if (isMouseInside(tool.x, tool.y, TOOL_BUTTON_WIDTH, TOOL_BUTTON_HEIGHT)) {
+      hoveredToolIndex = i;
     }
   }
 
@@ -886,10 +1210,11 @@ function mouseMoved() {
   }
 }
 
-// Escape clears the selection; on the Collection screen, the left and right arrow keys move the selection between plants
+// Escape clears the selected plant and puts away the tool; on the Collection screen, the left and right arrow keys move the selection between plants
 function keyPressed() {
   if (key === "Escape") {
     selectedPlantIndex = -1;
+    selectedTool = "";
     return;
   }
 
