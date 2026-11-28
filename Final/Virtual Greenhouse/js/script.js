@@ -32,9 +32,20 @@ const TEXT_SIZE_BODY = 17;
 // Thickness of the cream outlines
 const OUTLINE_WEIGHT = 4;
 
-// Loaded images; stays null if a file is missing
+// Loaded images; an image stays null if its file is missing
 let images = {
-  background: null
+  background: null,
+  plants: {}
+};
+
+// File names of the plant images in assets/plants/mature/
+const PLANT_FILE_NAMES = ["monstera", "snake_plant", "pothos", "sunflower", "cactus", "peace_lily", "fern", "succulent"];
+
+// Largest size a plant can be drawn in each area; floor plants are bigger because the floor is closer to the viewer
+const PLANT_SIZES = {
+  shelf: { width: 100, height: 110 },
+  table: { width: 100, height: 110 },
+  floor: { width: 120, height: 130 }
 };
 
 // Current screen: "greenhouse", "shop", "collection" or "inventory"
@@ -84,6 +95,29 @@ let placementSpots = [
 ];
 
 
+// Asset Loading
+
+// Loads one image and returns it, or returns null and prints a message if the file is missing
+async function loadImageOrNull(path) {
+  try {
+    return await loadImage(path);
+  } catch (error) {
+    console.log("Missing asset: " + path);
+    return null;
+  }
+}
+
+// Loads the background and every plant image
+async function loadAssets() {
+  images.background = await loadImageOrNull("assets/backgrounds/greenhouse.png");
+
+  for (let i = 0; i < PLANT_FILE_NAMES.length; i++) {
+    let name = PLANT_FILE_NAMES[i];
+    images.plants[name] = await loadImageOrNull("assets/plants/mature/" + name + ".png");
+  }
+}
+
+
 // 'Game' Setup
 
 // Creates a window-sized canvas, sets the font, loads the images, and sets up scaling and buttons
@@ -91,12 +125,7 @@ async function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont(FONT_NAME);
 
-  // Waits for the background to load; leaves it null if the file is missing
-  try {
-    images.background = await loadImage("assets/backgrounds/greenhouse.png");
-  } catch (error) {
-    console.log("Missing asset: assets/backgrounds/greenhouse.png");
-  }
+  await loadAssets();
 
   updateGameScale();
   setupNavButtons();
@@ -222,6 +251,13 @@ function drawImageFitted(img, x, y, maxWidth, maxHeight) {
   let drawY = y + (maxHeight - size.height) / 2;
 
   image(img, drawX, drawY, size.width, size.height);
+}
+
+// Draws an image with its bottom center at (centerX, baseY), so a pot stands on that point
+function drawImageGrounded(img, centerX, baseY, maxWidth, maxHeight) {
+  let size = fitImageSize(img, maxWidth, maxHeight);
+
+  image(img, centerX - size.width / 2, baseY - size.height, size.width, size.height);
 }
 
 // Draws a cream box labeled with the name of a missing image file
