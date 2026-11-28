@@ -28,6 +28,7 @@ const FONT_NAME = "Georgia";
 const TEXT_SIZE_TITLE = 28;
 const TEXT_SIZE_BUTTON = 20;
 const TEXT_SIZE_BODY = 17;
+const TEXT_SIZE_SMALL = 15;
 
 // Thickness of the cream outlines
 const OUTLINE_WEIGHT = 4;
@@ -38,8 +39,25 @@ let images = {
   plants: {}
 };
 
-// File names of the plant images in assets/plants/mature/
-const PLANT_FILE_NAMES = ["monstera", "snake_plant", "pothos", "sunflower", "cactus", "peace_lily", "fern", "succulent"];
+// Every kind of plant in the game
+const plantDatabase = [
+  { key: "monstera", name: "Monstera", type: "Tropical", wateringNeed: "Medium", cost: 40,
+    description: "A tropical plant with big split leaves. Likes bright, indirect light and drying out a little between waterings." },
+  { key: "snake_plant", name: "Snake Plant", type: "Succulent", wateringNeed: "Low", cost: 30,
+    description: "Tall, stiff leaves with yellow edges. Very hard to kill and happy to go weeks without water." },
+  { key: "pothos", name: "Pothos", type: "Vine", wateringNeed: "Medium", cost: 25,
+    description: "A trailing vine with heart-shaped leaves. Grows fast and droops a little when it's thirsty." },
+  { key: "sunflower", name: "Sunflower", type: "Flower", wateringNeed: "High", cost: 20,
+    description: "A cheerful flower that turns toward the sun. Needs lots of light and regular watering." },
+  { key: "cactus", name: "Cactus", type: "Cactus", wateringNeed: "Low", cost: 15,
+    description: "A spiky desert plant that stores water in its stem. Needs very little water and plenty of sun." },
+  { key: "peace_lily", name: "Peace Lily", type: "Flowering", wateringNeed: "High", cost: 35,
+    description: "Glossy leaves and white flowers. Its leaves droop when it needs water and perk up soon after." },
+  { key: "fern", name: "Fern", type: "Fern", wateringNeed: "High", cost: 25,
+    description: "Soft, feathery fronds that love humidity. Keep the soil slightly damp and out of harsh sun." },
+  { key: "succulent", name: "Succulent", type: "Succulent", wateringNeed: "Low", cost: 15,
+    description: "A small plant with thick, fleshy leaves that hold water. Water it only when the soil is dry." }
+];
 
 // Largest size a plant can be drawn in each area; floor plants are bigger because the floor is closer to the viewer
 const PLANT_SIZES = {
@@ -63,7 +81,7 @@ const NAV_BUTTON_HEIGHT = 54;
 const NAV_BUTTON_GAP = 16;
 const NAV_FIRST_BUTTON_Y = 150;
 
-// Sidebar buttons and the screen each one opens; x and y are set in setupNavButtons()
+// Sidebar buttons and the screen each one opens; position and size are set in setupNavButtons()
 let navButtons = [
   { label: "Greenhouse", screen: "greenhouse" },
   { label: "Shop", screen: "shop" },
@@ -94,6 +112,39 @@ let placementSpots = [
   { id: "floor-3", area: "floor", x: 772, y: 694 }
 ];
 
+// The plants the player owns; each one is an object made by addPlantToCollection()
+let ownedPlants = [];
+
+// Number given to the next plant added, so every owned plant has its own id
+let nextPlantId = 1;
+
+// The collection holds one plant per spot in the greenhouse
+const MAX_OWNED_PLANTS = placementSpots.length;
+
+// Plants the player owns when the game starts
+const STARTER_PLANTS = ["pothos", "snake_plant", "succulent"];
+
+// Index of the selected plant in ownedPlants, or -1 for none
+let selectedPlantIndex = -1;
+
+// Index of the plant card under the mouse, or -1 for none
+let hoveredCardIndex = -1;
+
+// Layout of the plant cards on the Collection screen
+const collectionGrid = { x: 132, y: 196, columns: 3 };
+const CARD_WIDTH = 110;
+const CARD_HEIGHT = 120;
+const CARD_GAP = 12;
+
+// Area on the right of the Collection screen that shows the selected plant
+const detailsArea = { x: 530, y: 196, width: 302 };
+
+// Button that removes the selected plant from the collection
+let removeButton = { label: "Remove", x: 611, y: 552, width: 140, height: 40 };
+
+// True when the mouse is over the Remove button
+let isRemoveHovered = false;
+
 
 // Asset Loading
 
@@ -107,20 +158,20 @@ async function loadImageOrNull(path) {
   }
 }
 
-// Loads the background and every plant image
+// Loads the background and the image for every plant in the database
 async function loadAssets() {
   images.background = await loadImageOrNull("assets/backgrounds/greenhouse.png");
 
-  for (let i = 0; i < PLANT_FILE_NAMES.length; i++) {
-    let name = PLANT_FILE_NAMES[i];
-    images.plants[name] = await loadImageOrNull("assets/plants/mature/" + name + ".png");
+  for (let i = 0; i < plantDatabase.length; i++) {
+    let key = plantDatabase[i].key;
+    images.plants[key] = await loadImageOrNull("assets/plants/mature/" + key + ".png");
   }
 }
 
 
 // 'Game' Setup
 
-// Creates a window-sized canvas, sets the font, loads the images, and sets up scaling and buttons
+// Creates a window-sized canvas, sets the font, loads the images, and sets up scaling, buttons and starter plants
 async function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont(FONT_NAME);
@@ -129,6 +180,7 @@ async function setup() {
 
   updateGameScale();
   setupNavButtons();
+  giveStarterPlants();
 }
 
 // Calculates the scale and offset that fit the game in the window without stretching
@@ -144,11 +196,20 @@ function windowResized() {
   updateGameScale();
 }
 
-// Centers each button in the sidebar and stacks them from top to bottom
+// Sets the size of each button, centers it in the sidebar and stacks them from top to bottom
 function setupNavButtons() {
   for (let i = 0; i < navButtons.length; i++) {
+    navButtons[i].width = NAV_BUTTON_WIDTH;
+    navButtons[i].height = NAV_BUTTON_HEIGHT;
     navButtons[i].x = sidebar.x + (sidebar.width - NAV_BUTTON_WIDTH) / 2;
     navButtons[i].y = NAV_FIRST_BUTTON_Y + i * (NAV_BUTTON_HEIGHT + NAV_BUTTON_GAP);
+  }
+}
+
+// Adds each starter plant to the collection
+function giveStarterPlants() {
+  for (let i = 0; i < STARTER_PLANTS.length; i++) {
+    addPlantToCollection(STARTER_PLANTS[i]);
   }
 }
 
@@ -274,7 +335,66 @@ function drawMissingAsset(fileName, x, y, w, h) {
   text("Missing image:\n" + fileName, x + w / 2, y + h / 2);
 }
 
-// Plant drawing functions go here in Stage 3
+// Draws an owned plant standing at (centerX, baseY), or a missing-image box if its picture didn't load
+function drawPlant(plant, centerX, baseY, maxWidth, maxHeight) {
+  let img = images.plants[plant.plantKey];
+
+  if (img) {
+    drawImageGrounded(img, centerX, baseY, maxWidth, maxHeight);
+  } else {
+    drawMissingAsset(plant.plantKey + ".png", centerX - maxWidth / 2, baseY - maxHeight, maxWidth, maxHeight);
+  }
+}
+
+
+// Plant Collection
+
+// Returns the database entry for a plant key, or null if there isn't one
+function getPlantData(plantKey) {
+  for (let i = 0; i < plantDatabase.length; i++) {
+    if (plantDatabase[i].key === plantKey) {
+      return plantDatabase[i];
+    }
+  }
+
+  return null;
+}
+
+// Adds a new plant to the collection; returns false if the collection is full
+function addPlantToCollection(plantKey) {
+  if (ownedPlants.length >= MAX_OWNED_PLANTS) {
+    return false;
+  }
+
+  ownedPlants.push({
+    id: nextPlantId,
+    plantKey: plantKey,
+    growthStage: "Mature",
+    health: 100,
+    spotId: null,
+    pot: "Original"
+  });
+
+  nextPlantId = nextPlantId + 1;
+  return true;
+}
+
+// Removes the plant at an index in ownedPlants and clears the selection
+function removePlantFromCollection(index) {
+  ownedPlants.splice(index, 1);
+  selectedPlantIndex = -1;
+}
+
+// Returns the top-left corner of the card in a given slot of the collection grid
+function getCardPosition(index) {
+  let column = index % collectionGrid.columns;
+  let row = floor(index / collectionGrid.columns);
+
+  return {
+    x: collectionGrid.x + column * (CARD_WIDTH + CARD_GAP),
+    y: collectionGrid.y + row * (CARD_HEIGHT + CARD_GAP)
+  };
+}
 
 
 // Interface Stuff
@@ -314,16 +434,16 @@ function drawButton(button, isActive, isHovered) {
 
   stroke(COLORS.cream);
   strokeWeight(OUTLINE_WEIGHT);
-  rect(button.x, button.y, NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT, 27);
+  rect(button.x, button.y, button.width, button.height, button.height / 2);
 
   noStroke();
   fill(COLORS.oliveDark);
   textSize(TEXT_SIZE_BUTTON);
   textAlign(CENTER, CENTER);
-  text(button.label, button.x + NAV_BUTTON_WIDTH / 2, button.y + NAV_BUTTON_HEIGHT / 2);
+  text(button.label, button.x + button.width / 2, button.y + button.height / 2);
 }
 
-// Darkens the greenhouse and draws a panel with a title and a message
+// Darkens the greenhouse and draws a panel with a title, plus a message if one is given
 function drawMenuPanel(title, message) {
   noStroke();
   fill(COLORS.dimmer);
@@ -340,9 +460,11 @@ function drawMenuPanel(title, message) {
   textSize(TEXT_SIZE_TITLE);
   text(title, menuPanel.x + menuPanel.width / 2, menuPanel.y + 56);
 
-  fill(COLORS.olive);
-  textSize(TEXT_SIZE_BODY);
-  text(message, menuPanel.x + menuPanel.width / 2, menuPanel.y + menuPanel.height / 2);
+  if (message !== "") {
+    fill(COLORS.olive);
+    textSize(TEXT_SIZE_BODY);
+    text(message, menuPanel.x + menuPanel.width / 2, menuPanel.y + menuPanel.height / 2);
+  }
 }
 
 // Shows the Shop panel
@@ -350,14 +472,123 @@ function drawShop() {
   drawMenuPanel("Plant Shop", "The shop is currently in progress");
 }
 
-// Shows the Collection panel
+// Shows the Collection panel: plant cards on the left and the selected plant's details on the right
 function drawCollection() {
-  drawMenuPanel("Collection", "Your plant collection is currently in progress");
+  drawMenuPanel("Collection (" + ownedPlants.length + "/" + MAX_OWNED_PLANTS + ")", "");
+
+  // A card for each owned plant
+  for (let i = 0; i < ownedPlants.length; i++) {
+    drawPlantCard(i);
+  }
+
+  // A dashed outline for each empty slot
+  for (let i = ownedPlants.length; i < MAX_OWNED_PLANTS; i++) {
+    drawEmptyCard(i);
+  }
+
+  // Line between the cards and the details
+  stroke(COLORS.cream);
+  strokeWeight(OUTLINE_WEIGHT);
+  line(detailsArea.x - 22, detailsArea.y, detailsArea.x - 22, detailsArea.y + 384);
+
+  drawPlantDetails();
+}
+
+// Draws the card for the owned plant at an index, outlined in yellow if selected or green if hovered
+function drawPlantCard(index) {
+  let plant = ownedPlants[index];
+  let data = getPlantData(plant.plantKey);
+  let position = getCardPosition(index);
+
+  if (index === selectedPlantIndex) {
+    stroke(COLORS.mustard);
+  } else if (index === hoveredCardIndex) {
+    stroke(COLORS.grass);
+  } else {
+    stroke(COLORS.cream);
+  }
+
+  strokeWeight(OUTLINE_WEIGHT);
+  fill(COLORS.cream);
+  rect(position.x, position.y, CARD_WIDTH, CARD_HEIGHT, 14);
+
+  drawPlant(plant, position.x + CARD_WIDTH / 2, position.y + 90, CARD_WIDTH - 20, 80);
+
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  textSize(TEXT_SIZE_SMALL);
+  text(data.name, position.x + CARD_WIDTH / 2, position.y + 105);
+}
+
+// Draws a dashed outline for an empty slot in the collection
+function drawEmptyCard(index) {
+  let position = getCardPosition(index);
+
+  drawingContext.setLineDash([9, 7]);
+  noFill();
+  stroke(COLORS.cream);
+  strokeWeight(3);
+  rect(position.x, position.y, CARD_WIDTH, CARD_HEIGHT, 14);
+  drawingContext.setLineDash([]);
+}
+
+// Draws the selected plant's picture, information and Remove button, or a hint if nothing is selected
+function drawPlantDetails() {
+  let centerX = detailsArea.x + detailsArea.width / 2;
+
+  if (selectedPlantIndex === -1) {
+    noStroke();
+    fill(COLORS.olive);
+    textAlign(CENTER, CENTER);
+    textSize(TEXT_SIZE_BODY);
+    text("Click a plant to see its details", centerX, detailsArea.y + 190);
+    return;
+  }
+
+  let plant = ownedPlants[selectedPlantIndex];
+  let data = getPlantData(plant.plantKey);
+
+  drawPlant(plant, centerX, detailsArea.y + 134, 150, 125);
+
+  // Name and type
+  noStroke();
+  fill(COLORS.oliveDark);
+  textAlign(CENTER, CENTER);
+  textSize(TEXT_SIZE_TITLE);
+  text(data.name, centerX, detailsArea.y + 162);
+
+  fill(COLORS.olive);
+  textSize(TEXT_SIZE_SMALL);
+  text(data.type, centerX, detailsArea.y + 190);
+
+  // Description, wrapped inside a box; push() and pop() keep the line spacing from affecting other text
+  push();
+  fill(COLORS.oliveDark);
+  textAlign(LEFT, TOP);
+  textLeading(20);
+  text(data.description, detailsArea.x, detailsArea.y + 208, detailsArea.width, 66);
+  pop();
+
+  // Plant information
+  let location = "Not placed yet";
+  if (plant.spotId !== null) {
+    location = plant.spotId;
+  }
+
+  fill(COLORS.oliveDark);
+  textAlign(LEFT, TOP);
+  text("Water needs: " + data.wateringNeed, detailsArea.x, detailsArea.y + 266);
+  text("Growth: " + plant.growthStage, detailsArea.x, detailsArea.y + 286);
+  text("Health: " + plant.health + "%", detailsArea.x, detailsArea.y + 306);
+  text("Location: " + location, detailsArea.x, detailsArea.y + 326);
+
+  drawButton(removeButton, false, isRemoveHovered);
 }
 
 // Shows the Inventory panel
 function drawInventory() {
-  drawMenuPanel("Inventory", "Tools and items are currently in progress");
+  drawMenuPanel("Inventory", "Tools and items are currently in progress..");
 }
 
 
@@ -381,27 +612,80 @@ function isMouseInside(x, y, w, h) {
   return gameMouseX >= x && gameMouseX <= x + w && gameMouseY >= y && gameMouseY <= y + h;
 }
 
-// Switches to a button's screen when that button is clicked
+// Handles clicks on the sidebar buttons, then on the Collection screen if it's open
 function mousePressed() {
   for (let i = 0; i < navButtons.length; i++) {
     let button = navButtons[i];
 
-    if (isMouseInside(button.x, button.y, NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT)) {
+    if (isMouseInside(button.x, button.y, button.width, button.height)) {
       currentScreen = button.screen;
       return;
     }
   }
+
+  if (currentScreen === "collection") {
+    handleCollectionClick();
+  }
 }
 
-// Records which button the mouse is over when the mouse moves
+// Selects a clicked plant card, or removes the selected plant when Remove is clicked
+function handleCollectionClick() {
+  for (let i = 0; i < ownedPlants.length; i++) {
+    let position = getCardPosition(i);
+
+    if (isMouseInside(position.x, position.y, CARD_WIDTH, CARD_HEIGHT)) {
+      selectedPlantIndex = i;
+      return;
+    }
+  }
+
+  if (selectedPlantIndex !== -1 && isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height)) {
+    removePlantFromCollection(selectedPlantIndex);
+  }
+}
+
+// Records which button or plant card the mouse is over when the mouse moves
 function mouseMoved() {
   hoveredNavButton = -1;
+  hoveredCardIndex = -1;
+  isRemoveHovered = false;
 
   for (let i = 0; i < navButtons.length; i++) {
     let button = navButtons[i];
 
-    if (isMouseInside(button.x, button.y, NAV_BUTTON_WIDTH, NAV_BUTTON_HEIGHT)) {
+    if (isMouseInside(button.x, button.y, button.width, button.height)) {
       hoveredNavButton = i;
+    }
+  }
+
+  if (currentScreen === "collection") {
+    for (let i = 0; i < ownedPlants.length; i++) {
+      let position = getCardPosition(i);
+
+      if (isMouseInside(position.x, position.y, CARD_WIDTH, CARD_HEIGHT)) {
+        hoveredCardIndex = i;
+      }
+    }
+
+    if (selectedPlantIndex !== -1) {
+      isRemoveHovered = isMouseInside(removeButton.x, removeButton.y, removeButton.width, removeButton.height);
+    }
+  }
+}
+
+// On the Collection screen, the left and right arrow keys move the selection between plants
+function keyPressed() {
+  if (currentScreen !== "collection" || ownedPlants.length === 0) {
+    return;
+  }
+
+  if (key === "ArrowRight") {
+    selectedPlantIndex = (selectedPlantIndex + 1) % ownedPlants.length;
+  } else if (key === "ArrowLeft") {
+    if (selectedPlantIndex <= 0) {
+      selectedPlantIndex = ownedPlants.length - 1;
+    } else {
+      selectedPlantIndex = selectedPlantIndex - 1;
     }
   }
 }
